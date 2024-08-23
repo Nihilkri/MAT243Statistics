@@ -73,12 +73,16 @@ def pa132():
   plt.show()
 
 
+def pa141():
+  # loads the titanic dataset 
+  titanic = sns.load_dataset("titanic")
+  #print("Rows: ", titanic.shape[0])
+  #print("Columns Names: ", titanic.columns)
+  #print("Column Dtypes: ", titanic.dtypes)
+  print(titanic['age'].min())
 
-def titanicTest():
-	titanic = sns.load_dataset("titanic")
-	print(titanic.describe())
 
 if(__name__ == "__main__"):
 	print("Imports loaded!")
-	pa132()
+	pa141()
 	print("Goodbye!")
