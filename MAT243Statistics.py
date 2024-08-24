@@ -187,6 +187,9 @@ def stats(dat:list):
   print("Sample variance:", smpvar)
   smpstd = math.sqrt(smpvar)
   print("Sample standard deviation", smpstd)  
+  mad = sum([abs(x - mean) for x in dat]) / n
+  print("Mean absolute deviation", mad)
+
   
 
 
@@ -194,6 +197,6 @@ if(__name__ == "__main__"):
   print("Imports loaded!")
   #stats([2, 3, 1, 1, 2, 4, 2, 1, 1, 3])
   #stats([3, 37, 23, 61, 36, 65, 6, 24, 1, 19, 72, 1, 13, 40, 1])
-  stats([3, 37, 23, 61, 36, 65, 6, 24, 1, 19, 72, 1, 13, 40, 1])
+  stats([1, 2, 8, 9])
   print("Goodbye!")
   
