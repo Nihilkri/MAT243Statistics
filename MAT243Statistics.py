@@ -190,6 +190,26 @@ def stats(dat:list):
   mad = sum([abs(x - mean) for x in dat]) / n
   print("Mean absolute deviation", mad)
 
+
+def section22(x:list, p:list):
+  """ 2.2 Properties of discrete probability distributions """
+  # x defines a list containing the outcomes in the sample space
+  # p defines a list containing the probabilities for each outcome
+    
+  # Links the values in x to the probabilities in p
+  discvar = st.rv_discrete(values=(x,p))
+
+  mean = sum([x[i] * p[i] for i in range(len(x))])
+  print("Mean:", mean, ",", discvar.mean())
+
+  var = sum([(x[i] - mean) ** 2 * p[i] for i in range(len(x))])
+  print("Variance:", var, ",", discvar.var())
+
+  std = math.sqrt(var)
+  print("Standard Deviation:", std, ",", discvar.std())
+
+  return 0
+
   
 
 
@@ -197,6 +217,10 @@ if(__name__ == "__main__"):
   print("Imports loaded!")
   #stats([2, 3, 1, 1, 2, 4, 2, 1, 1, 3])
   #stats([3, 37, 23, 61, 36, 65, 6, 24, 1, 19, 72, 1, 13, 40, 1])
-  stats([1, 2, 8, 9])
+  #stats([1, 2, 8, 9])
+  #x, p = [0,1,2,3,4,5,6], [0.1,0.2,0.3,0.1,0.1,0.0,0.2]
+
+  x, p = [0, 100, 150], [0.2, 0.7, 0.1]
+  section22(x, p)
   print("Goodbye!")
   
