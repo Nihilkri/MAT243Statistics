@@ -1,18 +1,20 @@
 import math
 #print("Math loaded")
-import numpy as np
-#print("Numpy loaded")
+# import numpy as np
+# #print("Numpy loaded")
 import scipy.stats as st
-#print("Scipy loaded")
-import pandas as pd
-#print("Pandas loaded")
-import matplotlib.pyplot as plt
-#print("Pyplot loaded")
-import sklearn as sks
-#print("Scikit-learn loaded")
-import seaborn as sns
-#print("Seaborn loaded")
-import quandl as qn
+# #print("Scipy loaded")
+# import pandas as pd
+# #print("Pandas loaded")
+# import matplotlib.pyplot as plt
+# #print("Pyplot loaded")
+# import sklearn as sks
+# #print("Scikit-learn loaded")
+# import seaborn as sns
+# #print("Seaborn loaded")
+# import quandl as qn
+
+sigma = chr(963)
 
 def plotSine():
   """ Plots a basic sine wave """
@@ -91,6 +93,13 @@ def abandc(abc:list) -> str:
     s += ", " + str(abc[a])
   s += ("," if n > 2 else "") + " and " + str(abc[-1])
   return s
+
+def samplemeanstd(dat:list):
+  n = len(dat)
+  mean = sum(dat) / n
+  sumsqd = sum([(x - mean) ** 2 for x in dat])
+  smpstd = math.sqrt(sumsqd / (n - 1))
+  return mean, smpstd
 
 def stats(dat:list):
   print("Data:", dat)
@@ -190,6 +199,12 @@ def stats(dat:list):
   mad = sum([abs(x - mean) for x in dat]) / n
   print("Mean absolute deviation", mad)
 
+def statstest():
+  #stats([2, 3, 1, 1, 2, 4, 2, 1, 1, 3])
+  #stats([3, 37, 23, 61, 36, 65, 6, 24, 1, 19, 72, 1, 13, 40, 1])
+  #stats([1, 2, 8, 9])
+  pass
+
 
 def section22(x:list, p:list):
   """ 2.2 Properties of discrete probability distributions """
@@ -210,17 +225,73 @@ def section22(x:list, p:list):
 
   return 0
 
+def section22test():
+  #x, p = [0,1,2,3,4,5,6], [0.1,0.2,0.3,0.1,0.1,0.0,0.2]
+  x, p = [0, 100, 150], [0.2, 0.7, 0.1]
+  section22(x, p)
+
   
+def zscore(x:float, mean:float, std:float) -> float:
+  """ A z-score is a signed value that indicates the number of 
+      standard deviations a quantity is from the mean """
+  return (x - mean) / std
+
+def section24(mean:float, std:float):
+  """ Normal Distribution """
+  for i in range(1, 6):
+    lval = st.norm.cdf(i, mean, std)
+    rval = st.norm.cdf(-i, mean, std)
+    lrval = (lval - rval) * 100
+    lstr = f"{-i}{sigma}={mean - i * std}"
+    rstr = f"{i}{sigma}={mean + i * std}"
+    print(f"{lrval:.6f}% of samples fall between {lstr} and {rstr}")
+
+  print()
+  for i in range(1, 6):
+    lval = st.norm.cdf(i, mean, std)
+    rval = st.norm.cdf(i - 1, mean, std)
+    lrval = (lval - rval) * 100
+    lstr = f"{i - 1}{sigma}={mean + (i - 1) * std}"
+    rstr = f"{i}{sigma}={mean + i * std}"
+    print(f"{lrval:2.6f}% of samples fall between {lstr} and {rstr}")
+  print(f"{round((st.norm.cdf(100, mean, std) - st.norm.cdf(5, mean, std)) * 100, 6)}% of samples are greater than 5{sigma}={mean + 5 * std}")
+
+  print()
+  print(f"68% of samples are within {st.norm.ppf(0.5-0.34134475, mean, std)}{sigma} and {st.norm.ppf(0.5+0.34134475, mean, std)}{sigma}")
+  print(f"50% of samples are within {st.norm.ppf(0.5-0.25, mean, std)}{sigma} and {st.norm.ppf(0.5+0.25, mean, std)}{sigma}")
+  print(f"99% of samples are below {st.norm.ppf(0.99, mean, std)}{sigma}")
+  print(f"99% of samples are above {st.norm.isf(0.99, mean, std)}{sigma}")
+
+
+def section24test():
+  pass
+  #section24(511, 120)
+  
+  # dat = [11.36, 7.89, 1.96, 0, -3.12, -9.52]
+  # mean, std = samplemeanstd(dat)
+  # z = zscore(dat[0], mean, std)
+  # print(z)
+  
+  #print(zscore(1.853, 1.757, 0.074))
+  #print(zscore(1.758, 1.618, 0.069))
+  
+  # section24(0, 1)
+
+  # mean, std = 150, 8.75
+  # print(st.norm.sf(150, mean, std))
+  # print(st.norm.cdf(167.5, mean, std) - st.norm.cdf(132.5, mean, std))
+  # print(st.norm.sf(159, mean, std))
+  # print(st.norm.cdf(170, mean, std) - st.norm.cdf(165, mean, std))
+
+  mean, std = 150, 8.75
+  print(st.norm.ppf(0.4, mean, std))
+  print(st.norm.isf(0.2, mean, std))
+  
+
 
 
 if(__name__ == "__main__"):
   print("Imports loaded!")
-  #stats([2, 3, 1, 1, 2, 4, 2, 1, 1, 3])
-  #stats([3, 37, 23, 61, 36, 65, 6, 24, 1, 19, 72, 1, 13, 40, 1])
-  #stats([1, 2, 8, 9])
-  #x, p = [0,1,2,3,4,5,6], [0.1,0.2,0.3,0.1,0.1,0.0,0.2]
-
-  x, p = [0, 100, 150], [0.2, 0.7, 0.1]
-  section22(x, p)
+  section24test()
   print("Goodbye!")
   
