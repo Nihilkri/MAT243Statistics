@@ -231,6 +231,41 @@ def section22test():
   section22(x, p)
 
   
+def allsamples(dat:list, sampn:int):
+  popn = len(dat)
+  samples = []
+  a = [i for i in range(popn)]
+  perm = int(math.factorial(popn) / math.factorial(popn-sampn))
+  adat = [dat[a[i]] for i in range(popn)]
+  print("adat =", adat)
+  samples.append(adat)
+  for p in range(1, perm):
+    print("Permutation", p, "/", perm)
+    l = k = popn - 2
+    for k in range(popn - 2, -1, -1):
+      if a[k] < a[k + 1]: break
+    print("k =", k)
+    if(k == 0): break
+    for l in range(popn - 1, k, -1):
+      if a[k] < a[l]: break
+    print("l =", l)
+    a[k], a[l] = a[l], a[k]
+    for i in range(0, (popn - k - 1) // 2):
+      a[k + 1 + i], a[popn - 1 - i] = a[popn - 1 - i], a[k + 1 + i]
+    print("a =", a)
+    adat = [dat[a[i]] for i in range(popn)]
+    print("adat =", adat)
+    samples.append(adat)
+  print("Samples =", samples)
+  return samples
+
+def samplingdistribution(dat:list, sampn:int):
+  popn = len(dat)
+  popmean, popstd = samplemeanstd(dat)
+  SE = popstd / math.sqrt(popn)
+  correctionfactor = math.sqrt((popn - sampn) / (popn - 1))
+  samples = allsamples(dat, sampn)
+
 def zscore(x:float, mean:float, std:float) -> float:
   """ A z-score is a signed value that indicates the number of 
       standard deviations a quantity is from the mean """
@@ -283,9 +318,12 @@ def section24test():
   # print(st.norm.sf(159, mean, std))
   # print(st.norm.cdf(170, mean, std) - st.norm.cdf(165, mean, std))
 
-  mean, std = 150, 8.75
-  print(st.norm.ppf(0.4, mean, std))
-  print(st.norm.isf(0.2, mean, std))
+  # mean, std = 150, 8.75
+  # print(st.norm.ppf(0.4, mean, std))
+  # print(st.norm.isf(0.2, mean, std))
+
+  samplingdistribution([1, 2, 3], 2)
+  # samplingdistribution([5,6,7, 9,13], 2)
   
 
 
