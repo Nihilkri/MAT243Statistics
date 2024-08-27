@@ -231,32 +231,42 @@ def section22test():
   section22(x, p)
 
   
-def allsamples(dat:list, sampn:int):
+def allsamples(dat:list, sampn:int, dbug:bool = False) -> list:
   popn = len(dat)
+  perms = []
   samples = []
   a = [i for i in range(popn)]
-  perm = int(math.factorial(popn) / math.factorial(popn-sampn))
+  popperm = int(math.factorial(popn))
+  print("Popperm =", popperm)
+  sampperm = popperm // int(math.factorial(popn-sampn))
+  print("Sampperm =", sampperm)
   adat = [dat[a[i]] for i in range(popn)]
-  print("adat =", adat)
-  samples.append(adat)
-  for p in range(1, perm):
-    print("Permutation", p, "/", perm)
+  if(dbug): print("adat =", adat)
+  perms.append(adat)
+  for p in range(1, popperm + 1):
+    if(dbug): print("Permutation", p, "/", popperm)
     l = k = popn - 2
     for k in range(popn - 2, -1, -1):
       if a[k] < a[k + 1]: break
-    print("k =", k)
-    if(k == 0): break
+    else:
+      k = -1
+    if(k < 0): break
+    if(dbug): print("k =", k)
     for l in range(popn - 1, k, -1):
       if a[k] < a[l]: break
-    print("l =", l)
+    if(dbug): print("l =", l)
     a[k], a[l] = a[l], a[k]
     for i in range(0, (popn - k - 1) // 2):
       a[k + 1 + i], a[popn - 1 - i] = a[popn - 1 - i], a[k + 1 + i]
-    print("a =", a)
+    if(dbug): print("a =", a)
     adat = [dat[a[i]] for i in range(popn)]
-    print("adat =", adat)
-    samples.append(adat)
-  print("Samples =", samples)
+    if(dbug): print("adat =", adat)
+    if(sum([0 if adat[i] == perms[-1][i] else 1 for i in range(sampn)]) == 0):
+    #if(adat[sampn - 1] != perms[-1][sampn - 1]):
+      samples.append(adat[:sampn])
+    perms.append(adat)
+  if(dbug): print("Perms =", perms)
+  if(dbug): print("Samples =", perms)
   return samples
 
 def samplingdistribution(dat:list, sampn:int):
@@ -265,6 +275,8 @@ def samplingdistribution(dat:list, sampn:int):
   SE = popstd / math.sqrt(popn)
   correctionfactor = math.sqrt((popn - sampn) / (popn - 1))
   samples = allsamples(dat, sampn)
+
+  return samples
 
 def zscore(x:float, mean:float, std:float) -> float:
   """ A z-score is a signed value that indicates the number of 
@@ -322,8 +334,8 @@ def section24test():
   # print(st.norm.ppf(0.4, mean, std))
   # print(st.norm.isf(0.2, mean, std))
 
-  samplingdistribution([1, 2, 3], 2)
-  # samplingdistribution([5,6,7, 9,13], 2)
+  #print(samplingdistribution([1, 2, 3, 4], 2))
+  print(samplingdistribution([5,6,7, 9,13], 2))
   
 
 
