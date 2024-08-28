@@ -321,7 +321,7 @@ def zscore(x:float, mean:float, std:float) -> float:
       standard deviations a quantity is from the mean """
   return (x - mean) / std
 
-def CLT(x:float, dmean:float, dstd:float, sampn:int, popn:int):
+def CLT(x:float, dmean:float, dstd:float, sampn:int, popn:int, r:int = 3):
   """ Central Limit Theorem
       Randomness assumption - samples must be randomly selected.
       Independence condition - sample values must be independent from each other.
@@ -329,10 +329,24 @@ def CLT(x:float, dmean:float, dstd:float, sampn:int, popn:int):
       A rule of thumb is that sample sizes should be at least 30.
       10% condition - sample size must be at most 10% of the population size.
   """
-  mean = dmean
-  std = dstd / math.sqrt(sampn)
-  z = (x - mean) / std
+  mean = round(dmean, r)
+  std = round(dstd / math.sqrt(sampn), r)
+  z = round(zscore(x, mean, std), r)
   return z, mean, std
+
+def binomialdistribution(phat:float, n:int, p:float, r:int = 3):
+  """ The Central Limit Theorem for proportions
+      It states that if X ~ B(n, p) where n is the number of trials and
+      p is the probability of success, then the sampling distribution for
+      proportions phat follows a normal distribution N(p, sqrt((p*(1-p))/n)).
+  """
+  if(n * p < 5 or n * (1 - p) < 5): return 0
+  mean = round(p, r)
+  std = round(math.sqrt(p * (1 - p) / n), r)
+  z = round(zscore(phat, mean, std), r)
+  return z, mean, std
+
+
 
 
 
@@ -390,17 +404,46 @@ def section24test():
   #print(samplingdistribution([1, 2, 3, 4], 2))
   #print(samplingdistribution([5,6,7, 9,13], 4))
 
-  mean, std = 3.57, 0.59
-  z, mean, std = CLT(3.8, mean, std, 36, 123501)
-  print(z, mean, std)
-  print(st.norm.sf(3.8, mean, std))
+  x, sampn, popn = 180, 36, 1
+  mean, std = 172, 29
+  z, mean, std = CLT(x, mean, std, sampn, popn)
+
+  # x, n, p = 0.09, 256, 0.08
+  # z, mean, std = binomialdistribution(x, n, p)
+
+  print(f"z = {z}, mean = {mean}, std = {std}")
+  print("At most", x)
+  print(st.norm.cdf(x, mean, std))
+  print(st.norm.cdf(z, 0, 1))
+  print("At least", x)
+  print(st.norm.sf(x, mean, std))
   print(st.norm.sf(z, 0, 1))
+
+
+def tscore(x:float, n:int, mean:float, std:float, r:int = 3):
+  t = (x - mean) / (std / math.sqrt(n))
+  return t
+
+
+
+def section25test():
+  x, n, mean, std = 0, 1, 0, 1
+  t = tscore(x, n, mean, std)
+
+  print(f"t = {t}, mean = {mean}, std = {std}")
+  print("At most", x)
+  print(st.t.cdf(t, n, mean, std))
+  print(st.t.cdf(t, n, 0, 1))
+  print("At least", x)
+  print(st.t.sf(x, n, mean, std))
+  print(st.t.sf(t, n, 0, 1))
+
   
 
 
 
 if(__name__ == "__main__"):
   print("Imports loaded!")
-  section24test()
+  section25test()
   print("Goodbye!")
   
