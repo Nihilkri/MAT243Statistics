@@ -94,11 +94,11 @@ def abandc(abc:list) -> str:
   s += ("," if n > 2 else "") + " and " + str(abc[-1])
   return s
 
-def samplemeanstd(dat:list):
+def meanstd(dat:list, sample:bool = True):
   n = len(dat)
   mean = sum(dat) / n
   sumsqd = sum([(x - mean) ** 2 for x in dat])
-  smpstd = math.sqrt(sumsqd / (n - 1))
+  smpstd = math.sqrt(sumsqd / (n - (1 if sample else 0)))
   return mean, smpstd
 
 def stats(dat:list):
@@ -292,13 +292,27 @@ def allsamples(dat:list, sampn:int, dbug:bool = False) -> list:
     if(dbug): print()
   return samples
 
-
 def samplingdistribution(dat:list, sampn:int):
   popn = len(dat)
-  popmean, popstd = samplemeanstd(dat)
-  SE = popstd / math.sqrt(popn)
-  correctionfactor = math.sqrt((popn - sampn) / (popn - 1))
+  popmean, popstd = meanstd(dat, False)
+  popstd = round(popstd, 2)
   samples = allsamples(dat, sampn)
+  numsamples = len(samples)
+  samplemeans = [sum(sample) / sampn for sample in samples]
+  meansamplemeans, samplestd = meanstd(samplemeans)
+  SE = popstd / math.sqrt(sampn)
+  correctionfactor = math.sqrt((popn - sampn) / (popn - 1))
+  distrostd = SE * correctionfactor
+  print("dat =", dat)
+  print("popmean =", popmean)
+  print("popstd =", popstd)
+  print("samples =", samples)
+  print("samplemeans =", samplemeans)
+  print("meansamplemeans =", meansamplemeans)
+  print("samplestd =", samplestd)
+  print("correctionfactor =", correctionfactor)
+  print("SE =", SE)
+  print("distrostd =", distrostd)
 
   return samples
 
@@ -307,21 +321,36 @@ def zscore(x:float, mean:float, std:float) -> float:
       standard deviations a quantity is from the mean """
   return (x - mean) / std
 
+def CLT(x:float, dmean:float, dstd:float, sampn:int, popn:int):
+  """ Central Limit Theorem
+      Randomness assumption - samples must be randomly selected.
+      Independence condition - sample values must be independent from each other.
+      Sample size assumption - sample size must be large enough.
+      A rule of thumb is that sample sizes should be at least 30.
+      10% condition - sample size must be at most 10% of the population size.
+  """
+  mean = dmean
+  std = dstd / math.sqrt(sampn)
+  z = (x - mean) / std
+  return z, mean, std
+
+
+
 def section24(mean:float, std:float):
   """ Normal Distribution """
   for i in range(1, 6):
-    lval = st.norm.cdf(i, mean, std)
-    rval = st.norm.cdf(-i, mean, std)
-    lrval = (lval - rval) * 100
+    lval = st.norm.cdf(-i, mean, std)
+    rval = st.norm.cdf(i, mean, std)
+    lrval = (rval - lval) * 100
     lstr = f"{-i}{sigma}={mean - i * std}"
     rstr = f"{i}{sigma}={mean + i * std}"
     print(f"{lrval:.6f}% of samples fall between {lstr} and {rstr}")
 
   print()
   for i in range(1, 6):
-    lval = st.norm.cdf(i, mean, std)
-    rval = st.norm.cdf(i - 1, mean, std)
-    lrval = (lval - rval) * 100
+    lval = st.norm.cdf(i - 1, mean, std)
+    rval = st.norm.cdf(i, mean, std)
+    lrval = (rval - lval) * 100
     lstr = f"{i - 1}{sigma}={mean + (i - 1) * std}"
     rstr = f"{i}{sigma}={mean + i * std}"
     print(f"{lrval:2.6f}% of samples fall between {lstr} and {rstr}")
@@ -359,7 +388,13 @@ def section24test():
   # print(st.norm.isf(0.2, mean, std))
 
   #print(samplingdistribution([1, 2, 3, 4], 2))
-  print(samplingdistribution([5,6,7, 9,13], 2))
+  #print(samplingdistribution([5,6,7, 9,13], 4))
+
+  mean, std = 3.57, 0.59
+  z, mean, std = CLT(3.8, mean, std, 36, 123501)
+  print(z, mean, std)
+  print(st.norm.sf(3.8, mean, std))
+  print(st.norm.sf(z, 0, 1))
   
 
 
