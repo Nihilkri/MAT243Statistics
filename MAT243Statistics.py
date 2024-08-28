@@ -230,19 +230,19 @@ def section22test():
   x, p = [0, 100, 150], [0.2, 0.7, 0.1]
   section22(x, p)
 
-  
-def allsamples(dat:list, sampn:int, dbug:bool = False) -> list:
+def generateallpermutations(dat:list, sampn:int, dbug:bool = False) -> list:
   popn = len(dat)
   perms = []
   samples = []
   a = [i for i in range(popn)]
   popperm = int(math.factorial(popn))
   print("Popperm =", popperm)
-  sampperm = popperm // int(math.factorial(popn-sampn))
+  sampperm = popperm // int(math.factorial(popn-sampn) )
   print("Sampperm =", sampperm)
   adat = [dat[a[i]] for i in range(popn)]
   if(dbug): print("adat =", adat)
   perms.append(adat)
+  samples.append(adat[:sampn])
   for p in range(1, popperm + 1):
     if(dbug): print("Permutation", p, "/", popperm)
     l = k = popn - 2
@@ -261,13 +261,37 @@ def allsamples(dat:list, sampn:int, dbug:bool = False) -> list:
     if(dbug): print("a =", a)
     adat = [dat[a[i]] for i in range(popn)]
     if(dbug): print("adat =", adat)
-    if(sum([0 if adat[i] == perms[-1][i] else 1 for i in range(sampn)]) == 0):
     #if(adat[sampn - 1] != perms[-1][sampn - 1]):
+    if(sum([0 if adat[i] == perms[-1][i] else 1 for i in range(sampn)]) != 0):
       samples.append(adat[:sampn])
     perms.append(adat)
   if(dbug): print("Perms =", perms)
   if(dbug): print("Samples =", perms)
   return samples
+
+def allsamples(dat:list, sampn:int, dbug:bool = False) -> list:
+  popn = len(dat)
+  samples = []
+  a = [i for i in range(sampn)]
+  numsamples = int(math.factorial(popn) // (math.factorial(popn-sampn) * math.factorial(sampn)))
+  for i in range(numsamples):
+    if(dbug): print("a =", a)
+    adat = [dat [a[j]] for j in range(sampn)]
+    if(dbug): print("adat =", adat)
+    samples.append(adat[:])
+    a[-1] += 1
+    if(dbug): print("a =", a)
+    for j in range(sampn - 1, 0, -1):
+      if(a[j] == popn + j - sampn + 1):
+        if(dbug): print(f"a[{j}] = {a[j]}")
+        a[j - 1] += 1
+        if(dbug): print("a =", a)
+        for k in range(j, sampn):
+          a[k] = a[j - 1] + k - j + 1
+          if(dbug): print("a =", a)
+    if(dbug): print()
+  return samples
+
 
 def samplingdistribution(dat:list, sampn:int):
   popn = len(dat)
