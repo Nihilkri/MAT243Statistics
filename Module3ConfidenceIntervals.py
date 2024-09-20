@@ -14,8 +14,8 @@ def Zstar(c:float) -> float:
     print("Confidence level not defined")
   return 0
 
-def MarginOfError(sampleMean: float, popStd:float, n:int, c:float):
-  """ Section 3.1 Confidence intervals
+def MarginOfError(c:float, popStd:float, n:int) -> float:
+  """ Section 3.1: Confidence intervals
       A margin of error, denoted by m, is the range of values above and below the point estimate.
       Numerically, m = (critical value)(standard error) where the critical value, which depends
       on c and the underlying distribution of the statistic, is the number of standard errors
@@ -25,8 +25,8 @@ def MarginOfError(sampleMean: float, popStd:float, n:int, c:float):
   standardError = popStd / (n ** 0.5)
   return criticalValue * standardError
 
-def ConfidenceInterval(sampleMean: float, popStd:float, n:int, c:float):
-  """ Section 3.1 Confidence intervals
+def ConfidenceInterval(c:float, sampleMean:float, popStd:float, n:int):
+  """ Section 3.1: Confidence intervals
       Two types of estimates exist: point estimates and interval estimates. A point estimate is a
       single value estimate for a parameter. An interval estimate is a range of values that is
       likely to contain the parameter being estimated. Combined with a probability statement, an
@@ -34,12 +34,24 @@ def ConfidenceInterval(sampleMean: float, popStd:float, n:int, c:float):
       interval contains the parameter is called the confidence level, which is denoted by c.
       A confidence interval is constructed by looking at the sample statistic and margin of error.
   """
-  m = MarginOfError(sampleMean, popStd, n, c)
+  m = MarginOfError(popStd, n, c)
   return (sampleMean - m, sampleMean + m)
 
+def GuaranteedSampleSize(c:float, popStd:float, marginOfError:float) -> int:
+  """ Section 3.2.2: Margin of error and sample size for means when popStd is known
+      The width of the confidence interval is twice the margin of error. Recall that the margin of
+      error depends on the confidence level and the standard error. Thus, given a confidence level,
+      the width of the confidence interval changes by changing the standard error. Increasing the
+      sample size decreases the standard error. Similarly, decreasing the sample size increases the
+      standard error. The size of the sample needed to guarantee a confidence interval with a
+      specified margin of error is given by the formula
+      n = (Zstar(c) * popStd / marginOfError) ** 2
+  """
+  n = (Zstar(c) * popStd / marginOfError) ** 2
+  return n
 
 def section3test():
-  section = "Example 3.2.2: Microbeads in a water reservoir"
+  section = "PA3.2.3: Tax assessment"
 
   if section == "PA3.2.2: Confidence interval":
     dat, popStd = [10, 17, 17.5, 18.5, 19.5], 1.25
@@ -50,16 +62,25 @@ def section3test():
       print(f"Confidence Level = {c * 100}%")
       standardError = popStd / (n ** 0.5)
       print(f"Standard Error = {standardError:.3f}")
-      moe = MarginOfError(sampleMean, popStd, n, c)
+      moe = MarginOfError(c, popStd, n)
       print(f"Margin of Error = {moe:.3f}")
-      ci = ConfidenceInterval(sampleMean, popStd, n, c)
+      ci = ConfidenceInterval(c, sampleMean, popStd, n)
       print(f"Confidence Interval = [{ci[0]:.3f}, {ci[1]:.3f}]")
       # Python-Function 3.2.1: norm.interval()
       ci = st.norm.interval(c, sampleMean, standardError)
       print(f"ST Confidence Interval = [{ci[0]:.3f}, {ci[1]:.3f}]")
       print()
 
-  if section == "Example 3.2.2: Microbeads in a water reservoir":
-    pass
+  elif section == "Example 3.2.2: Microbeads in a water reservoir":
+    c, marginOfError, popStd = 0.95, 0.8, 2.5
+    print(f"{GuaranteedSampleSize(c, popStd, marginOfError):0.3f}")
+
+  elif section == "PA3.2.3: Tax assessment":
+    sampleMean, popStd = 1400, 1000
+    print(f"{math.ceil(GuaranteedSampleSize(0.90, 1000, 100))}")
+
+  
+  elif section == "":
+    print(f"{0}")
   
 
