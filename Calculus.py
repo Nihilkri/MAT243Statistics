@@ -17,13 +17,13 @@ def plotSine():
   plt.plot(x, y)
   plt.show()
 
-def Plot(f, params, r:int, lx:float, rx:float, ly:float, ry:float, title:str, xlabel:str, ylabel:str):
+def Plot(f, params, title:str, xlabel:str, ylabel:str, lx:float, rx:float, r:int = 1048577, ly:float = None, ry:float = None):
   """ Plots a function F from lx to rx as resolution r """
   xs = np.linspace(lx, rx, r)
   #ys = np.fromfunction(f, (len(xs),))
   ys = f(xs, *params)
-  print(xs)
-  print(ys)
+  #print(xs)
+  #print(ys)
 	
   fig, ax = plt.subplots()
   if(not (ly is None and ry is None)):
@@ -39,10 +39,11 @@ def Gaussian(x:np.ndarray, mean:float, std:float) -> float:
   return (1 / (std*(2 * np.pi) ** 0.5)) * np.exp(-0.5 * ((x - mean) / std) ** 2)
 
 
-def Integrate(f, params, lx:float, rx:float, dx:float) -> float:
-  xs = np.linspace(lx, rx, (rx - lx) / dx)
+def Integrate(f, params, lx:float, rx:float, r:int = 1048577) -> float:
+  xs = np.linspace(lx, rx, r)
   ys = f(xs, *params)
-  return np.sum(ys)
+  dx = (rx - lx) / r
+  return np.sum(ys) * dx
 
 
 
@@ -50,7 +51,13 @@ def CalcTest():
   # lambda x: np.sin(x)
   def f(x):
     return np.sin(x)
-
-  print("$$\\func{1}{\\theta}$$")
-  #Plot(f, (,), 1001, -4*np.pi, 4*np.pi, "Sine Function", "$\\theta$", "$Sin(\\theta)$")
-  Plot(Gaussian, (1.0, 0.71), 10001, -4, 4, None, None, "Gaussian Distribution", "$\\sigma$", "y")
+  params, lx, rx, r = (0.0, 1.0), -3, 3, 1048577
+  i = Integrate(Gaussian, params, lx, rx, r)
+  print(f"Int_{lx}^{rx} = {i}")
+  print(f"Int_{lx}^{rx} **2/pi = {i ** 2 / np.pi}")
+  print("Peak =", Gaussian(params[0], *params))
+  print()
+  
+  print("2**20+1 =", 2**20+1)
+  #Plot(f, (,), "Sine Function", "$\\theta$", "$Sin(\\theta)$", -4*np.pi, 4*np.pi, 1048577)
+  #Plot(Gaussian, params, "Gaussian Distribution", "$\\sigma$", "y", lx, rx, r, None, None)
