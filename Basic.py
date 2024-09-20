@@ -123,3 +123,5 @@ def stats(dat:list):
   mad = sum([abs(x - mean) for x in dat]) / n
   print("Mean absolute deviation", mad)
 
+def FormatCI(ci:tuple) -> str:
+  return f"[{ci[0]:.3f}, {ci[1]:.3f}]"
