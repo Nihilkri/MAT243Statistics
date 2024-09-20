@@ -66,12 +66,12 @@ def allsamples(dat:list, sampn:int, dbug:bool = False) -> list:
 
 def samplingdistribution(dat:list, sampn:int):
   popn = len(dat)
-  popmean, popstd = meanstd(dat, False)
+  popmean, popstd = MeanStd(dat, False)
   popstd = round(popstd, 2)
   samples = allsamples(dat, sampn)
   numsamples = len(samples)
   samplemeans = [sum(sample) / sampn for sample in samples]
-  meansamplemeans, samplestd = meanstd(samplemeans)
+  meansamplemeans, samplestd = MeanStd(samplemeans)
   SE = popstd / math.sqrt(sampn)
   correctionfactor = math.sqrt((popn - sampn) / (popn - 1))
   distrostd = SE * correctionfactor

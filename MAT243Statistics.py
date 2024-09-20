@@ -17,6 +17,6 @@ from Module3ConfidenceIntervals import *
 
 if(__name__ == "__main__"):
   print("Imports loaded!")
-  section31test()
+  section3test()
   print("Goodbye!")
   

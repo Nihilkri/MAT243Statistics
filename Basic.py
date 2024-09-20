@@ -14,7 +14,7 @@ def abandc(abc:list) -> str:
   s += ("," if n > 2 else "") + " and " + str(abc[-1])
   return s
 
-def meanstd(dat:list, sample:bool = True):
+def MeanStd(dat:list, sample:bool = True):
   """ Calculates the mean and standard deviation of either the population or a sample.
       The mean is from section 1.12 and the standard deviation is from section 1.13.
   """
