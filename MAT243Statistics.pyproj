@@ -21,7 +21,15 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Basic.py" />
+    <Compile Include="Calculus.py" />
+    <Compile Include="Doodles.py" />
     <Compile Include="MAT243Statistics.py" />
+    <Compile Include="Module24NormalDistribution.py" />
+    <Compile Include="Module1DescriptiveStatistics.py" />
+    <Compile Include="Module25StudentstDistibution.py" />
+    <Compile Include="Module2ProbabilityDistributions.py" />
+    <Compile Include="Module3ConfidenceIntervals.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
