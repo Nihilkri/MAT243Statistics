@@ -14,9 +14,11 @@
 # #print("Seaborn loaded")
 # import quandl as qn
 from Module3ConfidenceIntervals import *
+from Calculus import *
 
 if(__name__ == "__main__"):
   print("Imports loaded!")
-  section3test()
+  #section3()
+  CalcTest()
   print("Goodbye!")
   

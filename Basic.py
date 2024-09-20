@@ -1,7 +1,7 @@
 import math
 
 
-sigma = chr(963)
+sigma = chr(0x3C3)
 
 def abandc(abc:list) -> str:
   """ Converts [A, B, C] into 'A, B, and C' """

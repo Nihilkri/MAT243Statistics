@@ -5,19 +5,6 @@ import pandas as pd
 import seaborn as sns
 
 
-def plotSine():
-  """ Plots a basic sine wave """
-  theta = chr(0x03B8)
-  x = [th/10000.0 for th in range(math.ceil(2*np.pi*10000))]
-  y = [np.sin(th) for th in x]
-  
-  plt.title("Sine function", fontsize=16)
-  plt.xlabel(theta)
-  plt.ylabel(f"sin({theta})")
-  plt.plot(x, y)
-  plt.show()
-
-
 def pa131():
   """ Python-Function 1.3.1: Unemployment rates.
   The code below loads a dataset containing unemployment rates in the United States from 1980 to 2017 and plots the data as a line chart. """
