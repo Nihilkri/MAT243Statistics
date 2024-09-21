@@ -88,7 +88,7 @@ def GuaranteedSampleSize(c:float, std:float, marginOfError:float, pop:bool) -> i
   return n
 
 def section3():
-  section = "PA3.2.5: Machine output"
+  section = "CA3.2.1: Confidence intervals for population means"
 
   if section == "PA3.2.2: Confidence interval":
     dat, popStd = [10, 17, 17.5, 18.5, 19.5], 1.25
@@ -154,6 +154,23 @@ def section3():
     print(f"{round(GuaranteedSampleSize(c, sampleStd, moe, True))}")
     print(f"{round(GuaranteedSampleSize(c, sampleStd, moe, False))}")
  
+  elif section == "CA3.2.1: Confidence intervals for population means":
+    dat = 74, 68, 64, 72, 68, 69, 67, 64, 62
+    popStd = 4
+    n, sampleMean, sampleStd = MeanStd(dat, True)
+    c = 0.90
+    print(f"x = {sampleMean:.3f}")
+    print(f"Moe = {MarginOfError(c, popStd, n, True):.3f}")
+    print(f"CI = {FormatCI(ConfidenceInterval(c, sampleMean, popStd, n, True))}")
+    print()
+
+    n, sampleMean, sampleStd = 11, 12, 3
+    c = 0.95
+    print(f"t* = {Tstar(c, n - 1):.3f}")
+    print(f"Moe = {MarginOfError(c, sampleStd, n, False):.3f}")
+    print(f"CI = {FormatCI(ConfidenceInterval(c, sampleMean, sampleStd, n, False))}")
+
+
 
 
 
