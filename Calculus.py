@@ -1,6 +1,7 @@
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.special as sp
 
 theta = chr(0x03B8)
 sigma = chr(0x3C3)
@@ -49,6 +50,8 @@ def Gamma(z:complex) -> complex:
 def Gaussian(x:float, mean:float, std:float) -> float:
   return (1 / (std*(2 * np.pi) ** 0.5)) * np.exp(-0.5 * ((x - mean) / std) ** 2)
 
+def Students(x:float, mean:float, std:float, df:float) -> float:
+  return ((1.0 + x ** 2.0 / df) ** (-(df + 1.0) / 2.0) / (df ** 0.5 * sp.beta(0.5, df / 2.0)))
 
 
 def Integrate(f, params, lx:float, rx:float, r:int = 1048577) -> float:
@@ -64,34 +67,35 @@ def ExpectedValue(f, params, lx:float, rx:float, r:int = 1048577) -> float:
 
 def CDF(f, params, lx:float, rx:float, r:int = 1048577) -> float:
   xs, ys = Func(f, params, lx, rx, r)
-  zs = np.zeros(len(ys))
   dx = (rx - lx) / r
-  c = 0
-  for i in range(len(ys)):
-    c += ys[i] * dx
-    zs[i] = c
+  zs = np.cumsum(ys) * dx
   return xs, zs
 
 
 
 def CalcTest():
-  # lambda x: np.sin(x)
-  params, lx, rx, r = (0.0, 1.0), -4, 4, 1048577
-  i = Integrate(Gaussian, params, lx, rx, r)
-  print(f"Int_{lx}^{rx} = {i}")
-  print(f"Int_{lx}^{rx} **2/pi = {i ** 2 / np.pi}")
-  print("Peak =", Gaussian(params[0], *params))
-  print()
-  
-  e = ExpectedValue(Gaussian, params, lx, rx, r)
-  print("E[X] =", e)
-
-  if True:
+  if False:
     params, lx, rx, r = None, -4*np.pi, 4*np.pi, 1048577
     f = [(*Func(np.sin, params, lx, rx, r), 'b'),
          (*Func(np.cos, params, lx, rx, r), 'r')]
     Plot(f, "Sine Function", "$\\theta$", "$Sin(\\theta)$", None, None)
+
+  if True:
+    params, lx, rx, r = (0.0, 1.0), -4, 4, 1048577
+    i = Integrate(Gaussian, params, lx, rx, r)
+    print(f"Int_{lx}^{rx} = {i}")
+    print(f"Int_{lx}^{rx} **2/pi = {i ** 2 / np.pi}")
+    print("Peak =", Gaussian(params[0], *params))
+    print()
+    e = ExpectedValue(Gaussian, params, lx, rx, r)
+    print("E[X] =", e)
+    f = [(*CDF(Gaussian, params, lx, rx, r), 'b'),
+         (*CDF(Students, (*params, 1), lx, rx, r), 'r'),
+         (*CDF(Students, (*params, 2), lx, rx, r), 'g'),
+         (*CDF(Students, (*params, 5), lx, rx, r), 'b'),
+         (*CDF(Students, (*params, 15), lx, rx, r), 'y')]
+    Plot(f, "Gaussian/Students Distribution", "$\\sigma$", "y", None, None)
+
   if False:
-    Plot([(*Func(Gaussian, params, lx, rx, r), 'b')], "Gaussian Distribution", "$\\sigma$", "y", None, None)
-  if False:
-    Plot([(*CDF(Gaussian, params, lx, rx, r), 'b')], "Gaussian CDF", "$\\sigma$", "y", None, None)
+    params, lx, rx, r = None, -4, 4, 1048577
+    Plot([(*Func(sp.gamma, params, lx, rx, r), 'b')], "Gamma Function", "x", "$\\Gamma(x)$", -20, 30)
