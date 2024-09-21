@@ -5,6 +5,7 @@ import Calculus
 
 def Zstar(c:float) -> float:
   """ Table 3.2.1: Critical values for common confidence levels. """
+  return st.norm.ppf(1 - (1 - c) / 2.0)
   confidenceLevels = [0.90, 0.95, 0.99]
   criticalValues = [1.645, 1.960, 2.576]
   if c in confidenceLevels:
@@ -15,6 +16,7 @@ def Zstar(c:float) -> float:
 
 def Tstar(c:float, df:int) -> float:
   """ Table 3.2.2: Critical values t* for selected degrees of freedom df and confidence level c. """
+  return st.t.ppf(1 - (1 - c) / 2.0, df)
   confidenceLevels = [0.90, 0.95, 0.99]
   criticalValues = [[2.015, 2.571, 4.032], # 5
                     [1.812, 2.228, 3.169], # 10
@@ -143,7 +145,7 @@ def section3():
     moe = 0.35
     c = 0.95
     sampleStd = 2.50
-    #print(f"{math.ceil(GuaranteedSampleSize(c, sampleStd, moe, False))}")
+    print(f"{math.ceil(GuaranteedSampleSize(c, sampleStd, moe, False))}")
 
   
 
