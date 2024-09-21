@@ -62,6 +62,9 @@ def ConfidenceInterval(c:float, sampleMean:float, std:float, n:int, pop:bool):
       interval contains the parameter is called the confidence level, which is denoted by c.
       A confidence interval is constructed by looking at the sample statistic and margin of error.
   """
+  if std == 0.0:
+    # Proportion, not a distribution
+    std = (sampleMean * (1 - sampleMean)) ** 0.5
   m = MarginOfError(c, std, n, pop)
   return (sampleMean - m, sampleMean + m)
 
@@ -88,7 +91,7 @@ def GuaranteedSampleSize(c:float, std:float, marginOfError:float, pop:bool) -> i
   return n
 
 def section3():
-  section = "CA3.2.1: Confidence intervals for population means"
+  section = "Example 3.3.1: Confidence interval for the proportion"
 
   if section == "PA3.2.2: Confidence interval":
     dat, popStd = [10, 17, 17.5, 18.5, 19.5], 1.25
@@ -170,7 +173,12 @@ def section3():
     print(f"Moe = {MarginOfError(c, sampleStd, n, False):.3f}")
     print(f"CI = {FormatCI(ConfidenceInterval(c, sampleMean, sampleStd, n, False))}")
 
-
+  elif section == "Example 3.3.1: Confidence interval for the proportion":
+    n = 1200
+    p = 348 / n
+    c = 0.95
+    print(f"CI = {FormatCI(ConfidenceInterval(c, p, 0, n, True))}")
+  
 
 
 
