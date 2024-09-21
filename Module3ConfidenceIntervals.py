@@ -93,7 +93,7 @@ def GuaranteedSampleSize(c:float, std:float, marginOfError:float, pop:bool, p:fl
     n = (Tstar(c, df) * sampleStd / marginOfError) ** 2
   return n
 
-def HypTest(a:float, sampleMean:float, hypPopMean:float, std:float, n:int, tail:int, pop:bool, prop:bool, sig:int=3):
+def HypTest(a:float, sampleMean:float, hypPopMean:float, std:float, n:int, tail:int, pop:bool, sig:int=3):
   """ Section 3.5.1 z-test for population means
       A z-test is a hypothesis test in which the z-statistic follows a normal distribution.
       The z-test for a population mean can be used to determine whether the population mean
@@ -107,10 +107,11 @@ def HypTest(a:float, sampleMean:float, hypPopMean:float, std:float, n:int, tail:
 """
   if std is None:
     # Procedure 3.6.1: Hypothesis testing for population proportion
-    sampleMean = round(sampleMean, sig)
+    p = sampleMean
+    sampleMean = round(sampleMean / n, sig)
     hypPopMean = round(hypPopMean, sig)
-    print(f"phat = {sampleMean:.3f}")
-    print(f"p0 = {hypPopMean:.3f}")
+    print(f"phat = {p}/{n} = {sampleMean:.6f}")
+    print(f"p0 = {hypPopMean:.6f}")
     print("n =", n)
     z = round((sampleMean - hypPopMean) / (((hypPopMean * (1 - hypPopMean)) / n) ** 0.5), sig)
   else:
@@ -118,7 +119,7 @@ def HypTest(a:float, sampleMean:float, hypPopMean:float, std:float, n:int, tail:
     z = round((sampleMean - hypPopMean) / (popStd / n ** 0.5), sig)
   if pop:
     # Section 3.5.1 z-test for population means
-    print(f"z = {z:.3f}")
+    print(f"z = {z:.6f}")
     if tail == -1:
       p = st.norm.cdf(z, 0, 1)
     elif tail == 1:
@@ -129,7 +130,7 @@ def HypTest(a:float, sampleMean:float, hypPopMean:float, std:float, n:int, tail:
     # Section 3.5.2 t-test for population means
     sampleStd = std
     t = round((sampleMean - hypPopMean) / (sampleStd / n ** 0.5), sig)
-    print(f"t = {t:.3f}")
+    print(f"t = {t:.6f}")
     print(f"df = {n - 1}")
     if tail == -1:
       p = st.t.cdf(t, n - 1, 0, 1) 
@@ -137,14 +138,14 @@ def HypTest(a:float, sampleMean:float, hypPopMean:float, std:float, n:int, tail:
       p = st.t.sf(t, n - 1, 0, 1)
     else:
       p = st.t.cdf(-t, n - 1, 0, 1) + st.t.sf(t, n - 1, 0, 1)
-  print(f"p = {p:.3f}")
+  print(f"p = {p:.6f}")
   print("Fails to reject null hypothesis" if p > a else "Rejects null hypothesis")
 
 
 
 
 def section3():
-  section = "Example 3.6.1: Human sex ratio"
+  section = "Example 3.6.2: Customer satisfaction"
 
   if section == "":
     print(f"{0:.3f}")
@@ -166,17 +167,20 @@ def section3():
 
 
   
+  elif section == "Example 3.6.2: Customer satisfaction":
+    HypTest(0.05, 132, 0.47, None, 240, 1, True, 3)
+
   elif section == "Example 3.6.1: Human sex ratio":
-    HypTest(0.05, 85/189, 106/206, None, 189, 0, True, True, 3)
+    HypTest(0.05, 85, 106/206, None, 189, 0, True, 3)
 
   elif section == "CA3.5.1: Hypothesis test for a population mean":
     q = 4
     if q == 2:
-      HypTest(0.05, 10.06, 10.0, 0.24, 74, 1, True, False, 2)
+      HypTest(0.05, 10.06, 10.0, 0.24, 74, 1, True, 2)
     elif q == 3:
-      HypTest(0.10, 13.09, 13.0, 0.26, 14, 0, False, False, 3)
+      HypTest(0.10, 13.09, 13.0, 0.26, 14, 0, False, 3)
     elif q == 4:
-      HypTest(0.05, 20.05, 20.0, 0.25, 33, -1, False, False, 3)
+      HypTest(0.05, 20.05, 20.0, 0.25, 33, -1, False, 3)
 
   elif section == "Example 3.5.3: Circumference of basketballs":
     hypPopMean = 29
@@ -185,7 +189,7 @@ def section3():
     sampleStd = 0.217
     tail = 0
     a = 0.01
-    HypTest(a, sampleMean, hypPopMean, sampleStd, n, tail, False, False, 3)
+    HypTest(a, sampleMean, hypPopMean, sampleStd, n, tail, False, 3)
   
   elif section == "PA3.5.1: Intelligence quotient":
     hypPopMean = 100
@@ -194,7 +198,7 @@ def section3():
     popStd = 15
     a = 0.05
     tail = 1
-    HypTest(a, sampleMean, hypPopMean, popStd, n, tail, True, False, 3)
+    HypTest(a, sampleMean, hypPopMean, popStd, n, tail, True, 3)
   
   elif section == "Example 3.5.2: Carry-on baggage volume":
     hypPopMean = 1.6
@@ -203,7 +207,7 @@ def section3():
     popStd = 0.29
     a = 0.10
     tail = 1
-    HypTest(a, sampleMean, hypPopMean, popStd, n, tail, True, False, 3)
+    HypTest(a, sampleMean, hypPopMean, popStd, n, tail, True, 3)
   
   elif section == "Example 3.5.1: Mean battery life":
     hypPopMean = 7.8
@@ -212,7 +216,7 @@ def section3():
     popStd = 0.57
     a = 0.05
     tail = -1
-    HypTest(a, sampleMean, hypPopMean, popStd, n, tail, True, False, 3)
+    HypTest(a, sampleMean, hypPopMean, popStd, n, tail, True, 3)
   
   elif section == "CA3.3.1: Confidence intervals for population proportions":
     n = 1000
