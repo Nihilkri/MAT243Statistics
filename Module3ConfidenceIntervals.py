@@ -91,7 +91,7 @@ def GuaranteedSampleSize(c:float, std:float, marginOfError:float, pop:bool) -> i
   return n
 
 def section3():
-  section = "Example 3.3.1: Confidence interval for the proportion"
+  section = "PA3.3.1: Confidence interval for the proportion"
 
   if section == "PA3.2.2: Confidence interval":
     dat, popStd = [10, 17, 17.5, 18.5, 19.5], 1.25
@@ -179,12 +179,23 @@ def section3():
     c = 0.95
     print(f"CI = {FormatCI(ConfidenceInterval(c, p, 0, n, True))}")
   
-
+  elif section == "PA3.3.1: Confidence interval for the proportion":
+    n = 1000
+    p = 281 / n
+    print(f"1. p = {p:.3f}")
+    ci = ConfidenceInterval(0.90, p, 0, n, True)
+    print(f"2. moe90 = {(ci[1] - ci[0])/2:.3f}")
+    ci = ConfidenceInterval(0.95, p, 0, n, True)
+    print(f"3. moe95 = {(ci[1] - ci[0])/2:.3f}")
+    print(f"4. CI95 = {FormatCI(ci)}")
+    # Python-Function 3.3.1: norm.interval()
+    stderr = (p * (1 - p)/n) ** 0.5
+    print(FormatCI(st.norm.interval(0.95, p, stderr)))
 
 
 
 
   elif section == "":
-    print(f"{0}")
+    print(f"{0:.3f}")
   
 
