@@ -13,7 +13,7 @@
 # import seaborn as sns
 # #print("Seaborn loaded")
 # import quandl as qn
-from Module3ConfidenceIntervals import *
+#from Module3ConfidenceIntervals import *
 from Calculus import *
 
 if(__name__ == "__main__"):
