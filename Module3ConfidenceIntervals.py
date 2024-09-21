@@ -93,8 +93,37 @@ def GuaranteedSampleSize(c:float, std:float, marginOfError:float, pop:bool, p:fl
     n = (Tstar(c, df) * sampleStd / marginOfError) ** 2
   return n
 
+def HypTest(a:float, sampleMean:float, hypPopMean:float, std:float, n:int, pop:bool, tail:int):
+  """ Section 3.5.1 z-test for population means
+      A z-test is a hypothesis test in which the z-statistic follows a normal distribution.
+      The z-test for a population mean can be used to determine whether the population mean
+      is the same as the hypothesized mean mu_0, assuming that the population standard
+      deviation sigma is known. When performing a hypothesis test involving the mean of a
+      single population with a known population standard deviation, the distribution of the
+      z-test statistic is assumed to be N(mu_0, (xbar - mu_0) / (sigma / sqrt(n))). In
+      practice, the population standard deviation is rarely known, so a more useful test
+      involves the t-distribution because the standard deviation of a sample can always be
+      computed.
+"""
+  if pop:
+    popStd = std
+    z = (sampleMean - hypPopMean) / (popStd / n ** 0.5)
+  else:
+    sampleStd = std
+    z = 0
+  print(f"z = {z:.3f}")
+  p = ((st.norm.cdf(z, 0, 1) if tail <= 0 else 0) +
+        (st.norm.sf(z, 0, 1) if tail >= 0 else 0))
+  print(f"p = {p:.3f}")
+  print("Fails to reject H0" if p > a else "Rejects H0")
+
+
+
+
+  pass
+
 def section3():
-  section = "CA3.3.1: Confidence intervals for population proportions"
+  section = "PA3.5.1: Intelligence quotient"
 
   if section == "PA3.2.2: Confidence interval":
     dat, popStd = [10, 17, 17.5, 18.5, 19.5], 1.25
@@ -230,9 +259,35 @@ def section3():
     c = 0.95
     print(GuaranteedSampleSize(c, 0, m, True, 0.5))
 
+  elif section == "Example 3.5.1: Mean battery life":
+    hypPopMean = 7.8
+    n = 10
+    sampleMean = 7.6
+    popStd = 0.57
+    a = 0.05
+    tail = -1
+    HypTest(a, sampleMean, hypPopMean, popStd, n, True, tail)
+  
+  elif section == "Example 3.5.2: Carry-on baggage volume":
+    hypPopMean = 1.6
+    n = 73
+    sampleMean = 1.7
+    popStd = 0.29
+    a = 0.10
+    tail = 1
+    HypTest(a, sampleMean, hypPopMean, popStd, n, True, tail)
+  
+  elif section == "PA3.5.1: Intelligence quotient":
+    hypPopMean = 100
+    n = 36
+    sampleMean = 105
+    popStd = 15
+    a = 0.05
+    tail = 1
+    HypTest(a, sampleMean, hypPopMean, popStd, n, True, tail)
   
 
-
+    
 
 
 
