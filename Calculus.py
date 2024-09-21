@@ -2,6 +2,7 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.special as sp
+import random
 
 theta = chr(0x03B8)
 sigma = chr(0x3C3)
@@ -29,14 +30,20 @@ def Func(f, params, lx:float, rx:float, r:int = 1048577):
 
 def Plot(s, title:str, xlabel:str, ylabel:str, ly:float = None, ry:float = None):
   """ Plots a function F from lx to rx as resolution r """
+  plt.style.use('dark_background')
   fig, ax = plt.subplots()
+  #ax.set_yticks(np.linspace(0, 1, 11))
+  #ax.set_yticks(np.linspace(0, 1, 101), minor=True)
   if(not (ly is None and ry is None)):
     ax.set_ylim(ly, ry)
   plt.title(title, fontsize=16)
   plt.xlabel(xlabel)
   plt.ylabel(ylabel)
-  for xs, ys, c in s:
+  for xs, ys, c, dbug in s:
     plt.plot(xs, ys, c = c)
+    if dbug:
+      print("xs ", (xs * 100).tolist())
+      print("ys ", (ys * 100).tolist())
   plt.grid()
   plt.show()
 
@@ -47,25 +54,49 @@ def Gamma(z:complex) -> complex:
     return t ** (z - 1) * np.exp(-t)
   return Integrate(f, (z,), 0, 1000)
 
-def Gaussian(x:float, mean:float, std:float) -> float:
-  return (1 / (std*(2 * np.pi) ** 0.5)) * np.exp(-0.5 * ((x - mean) / std) ** 2)
+def Gaussian(x:np.ndarray, mean:float, std:float, skl:float) -> np.ndarray:
+  return (skl / (std*(2 * np.pi) ** 0.5)) * np.exp(-0.5 * ((x - mean) / std) ** 2)
 
-def Students(x:float, mean:float, std:float, df:float) -> float:
+def Students(x:np.ndarray, mean:float, std:float, df:float) -> np.ndarray:
   return ((1.0 + x ** 2.0 / df) ** (-(df + 1.0) / 2.0) / (df ** 0.5 * sp.beta(0.5, df / 2.0)))
 
+def Const(x:np.ndarray) -> np.ndarray:
+  return np.linspace(0.125, 0.125, len(x))
 
-def Integrate(f, params, lx:float, rx:float, r:int = 1048577) -> float:
+def Dice(xs:np.ndarray, n:int, d:int) -> np.ndarray:
+  lxs = len(xs)
+  lnd = n*d
+  yscale = lnd / lxs
+  distr = np.zeros(lnd)
+  samples = np.zeros(lxs)
+  for sample in range(lxs):
+    y = 0
+    for roll in range(n):
+      y += random.randint(1, d)
+    samples[sample] = y
+    distr[y] += 1
+  ys = np.zeros(lxs)
+  for i in range(lxs):
+    ys[i] = distr[int(i*lnd/lxs)]
+  ys *= yscale
+  ssamples = sorted(samples)
+  return samples, ssamples, ys
+
+
+
+
+def Integrate(f, params, lx:float, rx:float, r:int = 1048577) -> np.ndarray:
   xs, ys = Func(f, params, lx, rx, r)
   dx = (rx - lx) / r
   return np.sum(ys) * dx
 
-def ExpectedValue(f, params, lx:float, rx:float, r:int = 1048577) -> float:
+def ExpectedValue(f, params, lx:float, rx:float, r:int = 1048577) -> np.ndarray:
   xs, ys = Func(f, params, lx, rx, r)
   ys *= xs
   dx = (rx - lx) / r
   return np.sum(ys) * dx
 
-def CDF(f, params, lx:float, rx:float, r:int = 1048577) -> float:
+def CDF(f, params, lx:float, rx:float, r:int = 1048577) -> np.ndarray:
   xs, ys = Func(f, params, lx, rx, r)
   dx = (rx - lx) / r
   zs = np.cumsum(ys) * dx
@@ -80,22 +111,44 @@ def CalcTest():
          (*Func(np.cos, params, lx, rx, r), 'r')]
     Plot(f, "Sine Function", "$\\theta$", "$Sin(\\theta)$", None, None)
 
-  if True:
-    params, lx, rx, r = (0.0, 1.0), -4, 4, 1048577
-    i = Integrate(Gaussian, params, lx, rx, r)
-    print(f"Int_{lx}^{rx} = {i}")
-    print(f"Int_{lx}^{rx} **2/pi = {i ** 2 / np.pi}")
-    print("Peak =", Gaussian(params[0], *params))
-    print()
-    e = ExpectedValue(Gaussian, params, lx, rx, r)
-    print("E[X] =", e)
-    f = [(*CDF(Gaussian, params, lx, rx, r), 'b'),
-         (*CDF(Students, (*params, 1), lx, rx, r), 'r'),
-         (*CDF(Students, (*params, 2), lx, rx, r), 'g'),
-         (*CDF(Students, (*params, 5), lx, rx, r), 'b'),
-         (*CDF(Students, (*params, 15), lx, rx, r), 'y')]
+  if False:
+    params, lx, rx, r = (0.0, 1.0, 1.0), -4, 4, 1048577
+    # i = Integrate(Gaussian, params, lx, rx, r)
+    # print(f"Int_{lx}^{rx} = {i}")
+    # print(f"Int_{lx}^{rx} **2/pi = {i ** 2 / np.pi}")
+    # print("Peak =", Gaussian(params[0], *params))
+    # print()
+    # e = ExpectedValue(Gaussian, params, lx, rx, r)
+    # print("E[X] =", e)
+    f = [(*Func(Gaussian, params, lx, rx, 9), 'b', True),
+         (*CDF(Gaussian, params, lx, rx, 9), 'r', True),
+         (*Func(Gaussian, params, lx, rx, r), 'g', False),
+         (*CDF(Gaussian, params, lx, rx, r), '#FF00FF', False),
+         (*Func(Const, None, lx, rx, r), '#FF8000', False),
+         (*CDF(Const, None, lx, rx, r), '#FFFFFF', False)]
     Plot(f, "Gaussian/Students Distribution", "$\\sigma$", "y", None, None)
 
   if False:
     params, lx, rx, r = None, -4, 4, 1048577
     Plot([(*Func(sp.gamma, params, lx, rx, r), 'b')], "Gamma Function", "x", "$\\Gamma(x)$", -20, 30)
+
+  if True:
+    n, d = 8, 6
+    nd = n * d
+    die = np.linspace(1, d, d)
+    print(die)
+    mean = die.mean() * n
+    std = die.std() * n ** 0.5
+    print(mean, std)
+    params, lx, rx, r = (mean, std, nd), 0, nd, 10001#1048577
+    xs = np.linspace(lx, rx, r)
+    samples, ssamples, ys = Dice(xs, n, d)
+    gaussian = Gaussian(xs, *params)
+    cdf = np.cumsum(gaussian)*nd/r
+    print(gaussian.max())
+    f = [(xs, samples, 'r', False),
+         (xs, ssamples, 'g', False),
+         (xs, ys, 'b', False),
+         (xs, gaussian, '#FFFFFF', False),
+         (xs, cdf, '#FF8000', False)]
+    Plot(f, f"{n}d{d} Distribution", "Value of the roll", "Number of rolls", None, None)
