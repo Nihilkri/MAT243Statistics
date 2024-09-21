@@ -26,7 +26,7 @@ def Func(f, params, lx:float, rx:float, r:int = 1048577):
     ys = f(xs, *params)
   return xs, ys
 
-def Plot(xs, ys, title:str, xlabel:str, ylabel:str, ly:float = None, ry:float = None):
+def Plot(s, title:str, xlabel:str, ylabel:str, ly:float = None, ry:float = None):
   """ Plots a function F from lx to rx as resolution r """
   fig, ax = plt.subplots()
   if(not (ly is None and ry is None)):
@@ -34,7 +34,8 @@ def Plot(xs, ys, title:str, xlabel:str, ylabel:str, ly:float = None, ry:float = 
   plt.title(title, fontsize=16)
   plt.xlabel(xlabel)
   plt.ylabel(ylabel)
-  plt.plot(xs, ys)
+  for xs, ys, c in s:
+    plt.plot(xs, ys, c = c)
   plt.grid()
   plt.show()
 
@@ -75,8 +76,6 @@ def CDF(f, params, lx:float, rx:float, r:int = 1048577) -> float:
 
 def CalcTest():
   # lambda x: np.sin(x)
-  def f(x):
-    return np.sin(x)
   params, lx, rx, r = (0.0, 1.0), -4, 4, 1048577
   i = Integrate(Gaussian, params, lx, rx, r)
   print(f"Int_{lx}^{rx} = {i}")
@@ -87,9 +86,12 @@ def CalcTest():
   e = ExpectedValue(Gaussian, params, lx, rx, r)
   print("E[X] =", e)
 
-  if False:
-    Plot(*Func(np.sin, None, -4*np.pi, 4*np.pi, 1048577), "Sine Function", "$\\theta$", "$Sin(\\theta)$", None, None)
-  if False:
-    Plot(*Func(Gaussian, params, lx, rx, r), "Gaussian Distribution", "$\\sigma$", "y", None, None)
   if True:
-    Plot(*CDF(Gaussian, params, lx, rx, r), "Gaussian CDF", "$\\sigma$", "y", None, None)
+    params, lx, rx, r = None, -4*np.pi, 4*np.pi, 1048577
+    f = [(*Func(np.sin, params, lx, rx, r), 'b'),
+         (*Func(np.cos, params, lx, rx, r), 'r')]
+    Plot(f, "Sine Function", "$\\theta$", "$Sin(\\theta)$", None, None)
+  if False:
+    Plot([(*Func(Gaussian, params, lx, rx, r), 'b')], "Gaussian Distribution", "$\\sigma$", "y", None, None)
+  if False:
+    Plot([(*CDF(Gaussian, params, lx, rx, r), 'b')], "Gaussian CDF", "$\\sigma$", "y", None, None)
