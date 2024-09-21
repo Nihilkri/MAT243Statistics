@@ -5,7 +5,7 @@ import Calculus
 
 def Zstar(c:float) -> float:
   """ Table 3.2.1: Critical values for common confidence levels. """
-  return st.norm.ppf(1 - (1 - c) / 2.0)
+  return round(st.norm.ppf(1 - (1 - c) / 2.0), 3)
   confidenceLevels = [0.90, 0.95, 0.99]
   criticalValues = [1.645, 1.960, 2.576]
   if c in confidenceLevels:
@@ -16,7 +16,7 @@ def Zstar(c:float) -> float:
 
 def Tstar(c:float, df:int) -> float:
   """ Table 3.2.2: Critical values t* for selected degrees of freedom df and confidence level c. """
-  return st.t.ppf(1 - (1 - c) / 2.0, df)
+  return round(st.t.ppf(1 - (1 - c) / 2.0, df), 3)
   confidenceLevels = [0.90, 0.95, 0.99]
   criticalValues = [[2.015, 2.571, 4.032], # 5
                     [1.812, 2.228, 3.169], # 10
@@ -68,7 +68,7 @@ def ConfidenceInterval(c:float, sampleMean:float, std:float, n:int, pop:bool):
   m = MarginOfError(c, std, n, pop)
   return (sampleMean - m, sampleMean + m)
 
-def GuaranteedSampleSize(c:float, std:float, marginOfError:float, pop:bool) -> int:
+def GuaranteedSampleSize(c:float, std:float, marginOfError:float, pop:bool, p:float = None) -> int:
   """ Section 3.2.2: Margin of error and sample size for means when popStd is known
       The width of the confidence interval is twice the margin of error. Recall that the margin of
       error depends on the confidence level and the standard error. Thus, given a confidence level,
@@ -78,7 +78,10 @@ def GuaranteedSampleSize(c:float, std:float, marginOfError:float, pop:bool) -> i
       specified margin of error is given by the formula
       n = (Zstar(c) * popStd / marginOfError) ** 2
   """
-  if pop:
+  if std == 0.0 and p is not None:
+    # Section 3.3.2: Margin of error and sample size for proportions
+    n = (Zstar(c) / marginOfError) ** 2 * p * (1 - p)
+  elif pop:
     # Section 3.2.2: Margin of error and sample size for means when popStd is known
     popStd = std
     n = (Zstar(c) * popStd / marginOfError) ** 2
@@ -91,7 +94,7 @@ def GuaranteedSampleSize(c:float, std:float, marginOfError:float, pop:bool) -> i
   return n
 
 def section3():
-  section = "PA3.3.1: Confidence interval for the proportion"
+  section = "CA3.3.1: Confidence intervals for population proportions"
 
   if section == "PA3.2.2: Confidence interval":
     dat, popStd = [10, 17, 17.5, 18.5, 19.5], 1.25
@@ -191,6 +194,54 @@ def section3():
     # Python-Function 3.3.1: norm.interval()
     stderr = (p * (1 - p)/n) ** 0.5
     print(FormatCI(st.norm.interval(0.95, p, stderr)))
+
+  elif section == "Example 3.3.2: Six months after Brexit":
+    moe = 0.0217
+    c = 0.90
+    for a, p in [('a', 0.47), ('b', 0.50)]:
+      print(f"{a}. {math.ceil(GuaranteedSampleSize(c, 0, moe, True, p))}")
+  
+  elif section == "PA3.3.2: Margin of error and sample size for proportions":
+    p = 0.36
+    moe = 0.01
+    print(f"1. {(GuaranteedSampleSize(0.90, 0, moe, True, p)):.3f}")
+    print(f"2. {(GuaranteedSampleSize(0.95, 0, moe, True, p)):.3f}")
+    print(f"3. {math.ceil(GuaranteedSampleSize(0.95, 0, moe, True, 0.50))}")
+    print(math.ceil(6234.682))
+
+  elif section == "CA3.3.1: Confidence intervals for population proportions":
+    n = 1000
+    p = 618 / n
+    print(f"P = {p:.3f}")
+    ci = ConfidenceInterval(0.95, p, 0, n, True)
+    m = (ci[1] - ci[0]) / 2.0
+    print(f"m = {m:.3f}")
+    print()
+    p = 71 / n
+    ci = ConfidenceInterval(0.90, p, 0, n, True)
+    print(f"ci = {FormatCI(ci)}")
+    print()
+    p = 0.31
+    m = 0.0393
+    c = 0.90
+    print(GuaranteedSampleSize(c, 0, m, True, p))
+    print()
+    m = 0.026
+    c = 0.95
+    print(GuaranteedSampleSize(c, 0, m, True, 0.5))
+
+  
+
+
+
+
+
+
+
+
+
+
+
 
 
 
