@@ -137,7 +137,7 @@ def HypTest(a:float, sampleMean:float, hypPopMean:float, std:float, n:int, tail:
     elif tail == 1:
       p = st.t.sf(t, n - 1, 0, 1)
     else:
-      p = st.t.cdf(-t, n - 1, 0, 1) + st.t.sf(t, n - 1, 0, 1)
+      p = st.t.cdf(-abs(t), n - 1, 0, 1) + st.t.sf(abs(t), n - 1, 0, 1)
   print(f"p = {p:.6f}")
   print("Fails to reject null hypothesis" if p > a else "Rejects null hypothesis")
 
@@ -145,12 +145,9 @@ def HypTest(a:float, sampleMean:float, hypPopMean:float, std:float, n:int, tail:
 
 
 def section3():
-  section = "Example 3.6.2: Customer satisfaction"
+  section = "CA3.6.1: Hypothesis test for a population proportion"
 
   if section == "":
-    print(f"{0:.3f}")
-
-  elif section == "":
     print(f"{0:.3f}")
 
 
@@ -167,6 +164,19 @@ def section3():
 
 
   
+  elif section == "CA3.6.1: Hypothesis test for a population proportion":
+    q = 3
+    if q == 1:
+      HypTest(0.01, 120, 0.63, None, 178, 1, True, 3)
+    elif q == 2:
+      HypTest(0.05, 87, 0.62, None, 125, 1, True, 3)
+    elif q == 3:
+      HypTest(0.10, 89, 0.77, None, 105, 0, True, 3)
+
+
+  elif section == "PA3.6.1: Exam scores proportion":
+    HypTest(0.01, 31, 0.5, None, 50, 1, True, 30)
+
   elif section == "Example 3.6.2: Customer satisfaction":
     HypTest(0.05, 132, 0.47, None, 240, 1, True, 3)
 
