@@ -1,6 +1,6 @@
-from Basic import *
+#from Basic import *
 import scipy.stats as st
-import Calculus
+#import Calculus
 
 def Ztest2(sampleMean1:float, sampleMean2:float, std1:float, std2:float, n1:int, n2:int, tail:int, a:float, sig:int=3):
   """ Section 4.1.1 Two-sample z-test for population means
@@ -57,3 +57,9 @@ def section4():
 
   elif section == "Example 4.1.1: Candle burn times":
     Ztest2(27.5, 26.0, 2.5, 3.5, 100, 100, 1, 0.05)
+
+
+if(__name__ == "__main__"):
+  print("Imports loaded!")
+  section4()
+  print("Goodbye!")
