@@ -105,13 +105,14 @@ def CDF(f, params, lx:float, rx:float, r:int = 1048577) -> np.ndarray:
 
 
 def CalcTest():
-  if False:
+  q = 4
+  if q == 0:
     params, lx, rx, r = None, -4*np.pi, 4*np.pi, 1048577
     f = [(*Func(np.sin, params, lx, rx, r), 'b'),
          (*Func(np.cos, params, lx, rx, r), 'r')]
     Plot(f, "Sine Function", "$\\theta$", "$Sin(\\theta)$", None, None)
 
-  if False:
+  elif q == 1:
     params, lx, rx, r = (0.0, 1.0, 1.0), -4, 4, 1048577
     # i = Integrate(Gaussian, params, lx, rx, r)
     # print(f"Int_{lx}^{rx} = {i}")
@@ -128,11 +129,11 @@ def CalcTest():
          (*CDF(Const, None, lx, rx, r), '#FFFFFF', False)]
     Plot(f, "Gaussian/Students Distribution", "$\\sigma$", "y", None, None)
 
-  if False:
+  elif q == 2:
     params, lx, rx, r = None, -4, 4, 1048577
     Plot([(*Func(sp.gamma, params, lx, rx, r), 'b')], "Gamma Function", "x", "$\\Gamma(x)$", -20, 30)
 
-  if True:
+  elif q == 3:
     n, d = 8, 6
     nd = n * d
     die = np.linspace(1, d, d)
@@ -152,3 +153,14 @@ def CalcTest():
          (xs, gaussian, '#FFFFFF', False),
          (xs, cdf, '#FF8000', False)]
     Plot(f, f"{n}d{d} Distribution", "Value of the roll", "Number of rolls", None, None)
+  
+  elif q == 4:
+    params, lx, rx, r = None, -4*np.pi, 4*np.pi, 1048577
+    xs = np.linspace(lx, rx, r)
+    ys1 = np.sin(xs) + 51.0
+    ys2 = np.sin(xs) + 49.0
+    ys = (ys1 + ys2) / 2.0
+    f = [(xs, ys1, 'r', False),
+         (xs, ys2, 'b', False),
+         (xs, ys, 'w', False)]
+    Plot(f, "Sine Function", "$\\theta$", "$Sin(\\theta)$", None, None)

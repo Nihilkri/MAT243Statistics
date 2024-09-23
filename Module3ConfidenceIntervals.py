@@ -112,14 +112,14 @@ def HypTest(a:float, sampleMean:float, hypPopMean:float, std:float, n:int, tail:
     hypPopMean = round(hypPopMean, sig)
     print(f"phat = {p}/{n} = {sampleMean:.6f}")
     print(f"p0 = {hypPopMean:.6f}")
-    print("n =", n)
+    print(f"{n = }")
     z = round((sampleMean - hypPopMean) / (((hypPopMean * (1 - hypPopMean)) / n) ** 0.5), sig)
   else:
     popStd = std
     z = round((sampleMean - hypPopMean) / (popStd / n ** 0.5), sig)
   if pop:
     # Section 3.5.1 z-test for population means
-    print(f"z = {z:.6f}")
+    print(f"{z =:.6f}")
     if tail == -1:
       p = st.norm.cdf(z, 0, 1)
     elif tail == 1:
@@ -150,20 +150,6 @@ def section3():
   if section == "":
     print(f"{0:.3f}")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
   elif section == "CA3.6.1: Hypothesis test for a population proportion":
     q = 3
     if q == 1:
@@ -361,20 +347,4 @@ def section3():
       ci = st.norm.interval(c, sampleMean, standardError)
       print(f"ST Confidence Interval = [{ci[0]:.3f}, {ci[1]:.3f}]")
       print()
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
 
