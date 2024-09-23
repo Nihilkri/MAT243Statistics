@@ -119,7 +119,7 @@ def HypTest(a:float, sampleMean:float, hypPopMean:float, std:float, n:int, tail:
     z = round((sampleMean - hypPopMean) / (popStd / n ** 0.5), sig)
   if pop:
     # Section 3.5.1 z-test for population means
-    print(f"{z =:.6f}")
+    print(f"{z = :.6f}")
     if tail == -1:
       p = st.norm.cdf(z, 0, 1)
     elif tail == 1:
@@ -130,7 +130,7 @@ def HypTest(a:float, sampleMean:float, hypPopMean:float, std:float, n:int, tail:
     # Section 3.5.2 t-test for population means
     sampleStd = std
     t = round((sampleMean - hypPopMean) / (sampleStd / n ** 0.5), sig)
-    print(f"t = {t:.6f}")
+    print(f"{t = :.6f}")
     print(f"df = {n - 1}")
     if tail == -1:
       p = st.t.cdf(t, n - 1, 0, 1) 
@@ -138,7 +138,7 @@ def HypTest(a:float, sampleMean:float, hypPopMean:float, std:float, n:int, tail:
       p = st.t.sf(t, n - 1, 0, 1)
     else:
       p = st.t.cdf(-abs(t), n - 1, 0, 1) + st.t.sf(abs(t), n - 1, 0, 1)
-  print(f"p = {p:.6f}")
+  print(f"{p = :.6f}")
   print("Fails to reject null hypothesis" if p > a else "Rejects null hypothesis")
 
 
