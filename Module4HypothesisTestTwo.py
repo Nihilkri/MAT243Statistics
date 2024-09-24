@@ -61,7 +61,7 @@ def UnpairedTTest(sampleMean1:float, sampleMean2:float, hypSampleMean1:float, hy
   print("Fails to reject null hypothesis" if p > a else "Rejects null hypothesis")
 
         
-        
+#==================================================================================================
 
 
 def section4():
@@ -74,23 +74,25 @@ def section4():
     print(f"{0:.3f}")
 
   elif section == "zyDE 4.1.2: Unpaired t-test":
-    """ The st.ttest_ind(x, y) command takes two arrays or DataFrame columns x and y as inputs and returns the t-statistic and the corresponding two-tailed p-value as outputs.
-
-The code below conducts the test for the packing machine example above. Both the two-tailed test and the one-tailed test are conducted.
-"""
+    """ The st.ttest_ind(x, y) command takes two arrays or DataFrame columns x and y as inputs and
+        returns the t-statistic and the corresponding two-tailed p-value as outputs.
+        The code below conducts the test for the packing machine example above. Both the two-tailed
+        test and the one-tailed test are conducted.
+    """
     import pandas as pd
     df = pd.read_csv('Machine.csv')
-    
     # Two-tailed test
     print(st.ttest_ind(df['Old'],df['New'],equal_var=False, alternative="two-sided"))
-    
     # One-tailed test
     print(st.ttest_ind(df['Old'],df['New'],equal_var=False, alternative="greater"))
     
   elif section == "zyDE 4.1.1: Paired t-test":
-    """ The st.ttest_rel(x, y) function takes two arrays or DataFrame columns x and y with the same length as inputs and returns the t-statistic and the corresponding two-tailed p-value as outputs.
-
-      The code below loads the exam scores data and uses a paired t-test for the hypotheses H_0 : mu_d = 0 and H_a : mu_d != 0 where mu_d is the average difference in students' exam 1 and exam 2 scores.
+    """ The st.ttest_rel(x, y) function takes two arrays or DataFrame columns x and y with the same
+        length as inputs and returns the t-statistic and the corresponding two-tailed p-value as
+        outputs.
+        The code below loads the exam scores data and uses a paired t-test for the hypotheses
+        H_0 : mu_d = 0 and H_a : mu_d != 0 where mu_d is the average difference in students'
+        exam 1 and exam 2 scores.
     """
     import pandas as pd
     df = pd.read_csv('ExamScores.csv')

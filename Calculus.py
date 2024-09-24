@@ -82,6 +82,30 @@ def Dice(xs:np.ndarray, n:int, d:int) -> np.ndarray:
   ssamples = sorted(samples)
   return samples, ssamples, ys
 
+def WeightedDice(xs:np.ndarray, n:int, die:np.ndarray, pd:np.ndarray) -> np.ndarray:
+  d = len(die)
+  lxs = len(xs)
+  lnd = n*d
+  yscale = lnd / lxs
+  distr = np.zeros(lnd + 1)
+  samples = np.zeros(lxs)
+  print("\n", pd, ":")
+  for sample in range(lxs):
+    rc = random.choices(die, pd, k=n)
+    y = int(np.sum(rc))
+    samples[sample] = y
+    distr[y] += 1
+    if sample % 1000000 == 0:
+      print(sample//1000, rc, y)
+  ys = np.zeros(lxs)
+  #print("i =", (lxs - 1), "->", (lxs - 1)*lnd/lxs, "->", int((lxs - 1)*lnd/lxs))
+  #print("i =", (lxs), "->", (lxs)*lnd/lxs, "->", int((lxs)*lnd/lxs))
+  for i in range(lxs):
+    ys[i] = distr[int(round(i*lnd/lxs))]
+  ys *= yscale
+  ssamples = sorted(samples)
+  return samples, ssamples, ys
+
 
 
 
@@ -105,7 +129,7 @@ def CDF(f, params, lx:float, rx:float, r:int = 1048577) -> np.ndarray:
 
 
 def CalcTest():
-  q = 4
+  q = 5
   if q == 0:
     params, lx, rx, r = None, -4*np.pi, 4*np.pi, 1048577
     f = [(*Func(np.sin, params, lx, rx, r), 'b'),
@@ -164,3 +188,33 @@ def CalcTest():
          (xs, ys2, 'b', False),
          (xs, ys, 'w', False)]
     Plot(f, "Sine Function", "$\\theta$", "$Sin(\\theta)$", None, None)
+
+  elif q == 5:
+    n, d = 8, 6
+    nd = n * d
+    die = np.linspace(1, d, d)
+    print(die)
+    mean = die.mean() * n
+    std = die.std() * n ** 0.5
+    print(mean, std)
+    params, lx, rx, r = (mean, std, nd), 0, nd, 10001#1048577
+    xs = np.linspace(lx, rx, r)
+    pds = [
+          [1/6, 1/6, 1/6, 1/6, 1/6, 1/6],
+          [1/32, 5/32, 10/32, 10/32, 5/32, 1/32],
+          [10/32, 5/32, 1/32, 1/32, 5/32, 10/32],
+          [0, 0, 0, 1/32, 0, 31/32],
+          [0, 0, 0, 0, 0, 1]]
+    # ys = samples, ssamples, ys
+    ys = [[*WeightedDice(xs, n, die, pd)] for pd in pds]
+    gaussian = Gaussian(xs, *params)
+    cdf = np.cumsum(gaussian)*nd/r
+    print(gaussian.max())
+    f = [(xs, gaussian, '#FFFFFF', False),
+         (xs, ys[0][2], 'r', False),
+         (xs, ys[1][2], 'g', False),
+         (xs, ys[2][2], 'b', False),
+         (xs, ys[3][2], '#8000FF', False),
+         (xs, ys[4][2], '#FF00FF', False)]
+    Plot(f, f"{n}d{d} Weighted Distribution", "Value of the roll", "Number of rolls", None, None)
+  
