@@ -32,6 +32,7 @@ def pairedTTest(sampleMeanDifference:float, hypMeanDifference:float, sampleStd:f
   t = round((sampleMeanDifference - hypMeanDifference) / (sampleStd / n ** 0.5), sig)
   print(f"{t = :.6f}")
   df = n - 1
+  print(f"{df = }")
   if tail == -1:
     p = st.t.cdf(t, df, 0, 1)
   elif tail == 1:
@@ -51,6 +52,7 @@ def UnpairedTTest(sampleMean1:float, sampleMean2:float, hypSampleMean1:float, hy
   t = round((sampleMean1 - sampleMean2 - (hypSampleMean1 - hypSampleMean2)) / stderr, sig)
   print(f"{t = :.6f}")
   df = n1 + n2 - 2
+  print(f"{df = }")
   if tail == -1:
     p = st.t.cdf(t, df, 0, 1)
   elif tail == 1:
@@ -60,18 +62,51 @@ def UnpairedTTest(sampleMean1:float, sampleMean2:float, hypSampleMean1:float, hy
   print(f"{p = :.6f}")
   print("Fails to reject null hypothesis" if p > a else "Rejects null hypothesis")
 
+def ZTest2(samp1:float, n1:int, samp2:float, n2:int, tail:int, a:float, sig:int=3):
+  """ """
+  p1, p2, p = samp1 / n1, samp2 / n2, (samp1 + samp2) / (n1 + n2)
+  if(samp1 < 5):
+    print(f"The first proportion is too small. {n1}*{p1} < 5.")
+    return 0
+  if(n1 - samp1 < 5):
+    print(f"The first proportion is too large. {n1}*{p1} > {n1} - 5.")
+    return 0
+  if(samp2 < 5):
+    print(f"The second proportion is too small. {n2}*{p2} < 5.")
+    return 0
+  if(n2 - samp2 < 5):
+    print(f"The second proportion is too large. {n2}*{p2} > {n2} - 5.")
+    return 0
+  z = (p1 - p2 - 0) / (p * (1 - p) * (1 / n1 + 1 / n2)) ** 0.5 
         
 #==================================================================================================
 
 
 def section4():
-  section = "zyDE 4.1.2: Unpaired t-test"
+  section = "normalDistributionDefinition"
 
   if section == "":
     print(f"{0:.3f}")
 
   elif section == "":
     print(f"{0:.3f}")
+
+  elif section == "":
+    print(f"{0:.3f}")
+
+  elif section == "":
+    print(f"{0:.3f}")
+
+  elif section == "":
+    print(f"{0:.3f}")
+
+  elif section == "normalDistributionDefinition":
+    from Module24NormalDistribution import normalDistributionDefinition as gauss
+    gauss(0, 1)
+
+  elif section == "CA4.1.1: Hypothesis test for the difference between two population means":
+    #UnpairedTTest(130, 126, 0, 0, 5, 3, 12, 12, 0, 0.01, 3)
+    pairedTTest(84-81, 0, 6, 11, 0, 0.01, 3)
 
   elif section == "zyDE 4.1.2: Unpaired t-test":
     """ The st.ttest_ind(x, y) command takes two arrays or DataFrame columns x and y as inputs and

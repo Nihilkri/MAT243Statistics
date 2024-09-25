@@ -13,12 +13,10 @@
 # import seaborn as sns
 # #print("Seaborn loaded")
 # import quandl as qn
-#from Module4HypothesisTestTwo import *
-from Calculus import *
+from Module4HypothesisTestTwo import *
 
 if(__name__ == "__main__"):
   print("Imports loaded!")
-  #section4()
-  CalcTest()
+  section4()
   print("Goodbye!")
   

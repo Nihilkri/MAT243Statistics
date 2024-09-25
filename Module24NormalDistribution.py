@@ -121,7 +121,25 @@ def binomialdistribution(phat:float, n:int, p:float, r:int = 3):
 
 
 def normalDistributionDefinition(mean:float, std:float):
-  """ 2.4 Normal Distribution """
+  """ 2.4 Normal Distribution
+  
+  
+  
+      st.norm and st.t rules:
+        cdf() is the integral from -Inf to x, measuring P(Z <= X)
+        sf() is the integral from x to Inf, measuring P(Z >= X)
+        cdf(<0) = <0.5
+        cdf(x) + cdf(-x) = 1
+        cdf(x) + sf(x) = 1
+        cdf(x) = sf(-x)
+        ppf(y) is the inverse of cdf, asking which Z gives the probability given 0<y<1s
+        ppf(cdf(x)) = x
+        ppf(y) = -ppf(1 - y)
+        ppf(not 0<y<1) = NaN
+        isf() is the complement of ppf()
+        ppf(y) = isf(1 - y)
+
+  """
   for i in range(1, 6):
     lval = st.norm.cdf(-i, mean, std)
     rval = st.norm.cdf(i, mean, std)
@@ -145,6 +163,35 @@ def normalDistributionDefinition(mean:float, std:float):
   print(f"50% of samples are within {st.norm.ppf(0.5-0.25, mean, std)}{sigma} and {st.norm.ppf(0.5+0.25, mean, std)}{sigma}")
   print(f"99% of samples are below {st.norm.ppf(0.99, mean, std)}{sigma}")
   print(f"99% of samples are above {st.norm.isf(0.99, mean, std)}{sigma}")
+
+  print()
+  from random import random
+  x = random() * 2.0 - 1.0
+  print(f"{x = }")
+  print(f"{st.norm.cdf( 0 + x, mean, std) = }")
+  print(f"{st.norm.cdf( 1 - x, mean, std) = }")
+  print(f"{st.norm.cdf( 0 - x, mean, std) = }")
+  print(f"{st.norm.cdf(-1 + x, mean, std) = }")
+
+  print()
+  print(f"{st.norm.sf ( 0 + x, mean, std) = }")
+  print(f"{st.norm.sf ( 1 - x, mean, std) = }")
+  print(f"{st.norm.sf ( 0 - x, mean, std) = }")
+  print(f"{st.norm.sf (-1 + x, mean, std) = }")
+
+  print()
+  y = st.norm.cdf( 0 + x, mean, std)
+  print(f"{y = }")
+  print(f"{st.norm.ppf( 0 + y, mean, std) = }")
+  print(f"{st.norm.ppf( 1 - y, mean, std) = }")
+  print(f"{st.norm.ppf( 0 - y, mean, std) = }")
+  print(f"{st.norm.ppf(-1 + y, mean, std) = }")
+
+  print()
+  print(f"{st.norm.isf( 0 + y, mean, std) = }")
+  print(f"{st.norm.isf( 1 - y, mean, std) = }")
+  print(f"{st.norm.isf( 0 - y, mean, std) = }")
+  print(f"{st.norm.isf(-1 + y, mean, std) = }")
 
 
 def section24test():
