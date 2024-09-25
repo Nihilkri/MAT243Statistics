@@ -89,14 +89,16 @@ def ZTest2Prop(samp1:float, n1:int, samp2:float, n2:int, tail:int, a:float, sig:
   print(f"{p1 = :.{sig}f}")
   print(f"{p2 = :.{sig}f}")
   print(f"p^ = {p:.{sig}f}")
-  z = round((p1 - p2 - 0) / (p * (1 - p) * (1 / n1 + 1 / n2)) ** 0.5, sig)
+  stderr = (p * (1 - p) * (1 / n1 + 1 / n2)) ** 0.5
+  print(f"{stderr = }")
+  z = round((p1 - p2 - 0) / stderr, sig)
   ZTest(z, tail, a, sig)
         
 #==================================================================================================
 
 
 def Section4():
-  section = "Example 4.2.1: Gender and voting"
+  section = "CA4.2.1: Hypothesis test for the difference between two population proportions"
 
   if section == "":
     print(f"{0:.3f}")
@@ -104,11 +106,24 @@ def Section4():
   elif section == "":
     print(f"{0:.3f}")
 
-  elif section == "":
-    print(f"{0:.3f}")
+  elif section == "CA4.2.1: Hypothesis test for the difference between two population proportions":
+    q = 2
+    if q == 1:
+      ZTest2Prop(245, 800, 304, 1000, 0, 0.01, 3)
+    elif q == 2:
+      ZTest2Prop(538, 800, 628, 1000, 1, 0.01, 3)
 
-  elif section == "":
-    print(f"{0:.3f}")
+  elif section == "Python-Function 4.2.1: proportions_ztest()":
+    from statsmodels.stats.proportion import proportions_ztest
+    counts = [95, 125]
+    n = [5000, 5000]
+    print(proportions_ztest(counts, n))
+
+  elif section == "PA4.2.1: Effectiveness of a vaccine":
+    ZTest2Prop(95, 5000, 125, 5000, -1, 0.05, 3)
+
+  elif section == "Example 4.2.2: Adverse reaction to drugs":
+    ZTest2Prop(18, 25, 21, 30, 1, 0.01, 3)
 
   elif section == "Example 4.2.1: Gender and voting":
     ZTest2Prop(70, 132, 63, 105, 0, 0.05, 3)
@@ -147,12 +162,11 @@ def Section4():
     print(st.ttest_rel(df['Exam1'],df['Exam2']))
 
   elif section == "Python-Function 4.1.1: ztest(x1, x2)":
-    #from statsmodels.stats.weightstats import ztest
-    #sample1 = [21, 28, 40, 55, 58, 60]
-    #sample2 = [13, 29, 50, 55, 71, 90]
-    #print(ztest(x1 = sample1, x2 = sample2))
-    pass
-
+    from statsmodels.stats.weightstats import ztest
+    sample1 = [21, 28, 40, 55, 58, 60]
+    sample2 = [13, 29, 50, 55, 71, 90]
+    print(ztest(x1 = sample1, x2 = sample2))
+    
   elif section == "PA4.1.1: Commute times":
     ZTest2(5.35, 4.95, 0.5, 0.8, 40, 50, 1, 0.05, 4)
 
