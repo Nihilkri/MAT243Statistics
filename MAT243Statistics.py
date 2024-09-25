@@ -17,6 +17,6 @@ from Module4HypothesisTestTwo import *
 
 if(__name__ == "__main__"):
   print("Imports loaded!")
-  section4()
+  Section4()
   print("Goodbye!")
   

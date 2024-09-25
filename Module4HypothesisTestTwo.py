@@ -1,8 +1,9 @@
 #from Basic import *
+from Module3ConfidenceIntervals import ZTest, TTest
 import scipy.stats as st
 #import Calculus
 
-def Ztest2(sampleMean1:float, sampleMean2:float, popStd1:float, popStd2:float, n1:int, n2:int, tail:int, a:float, sig:int=3):
+def ZTest2(sampleMean1:float, sampleMean2:float, popStd1:float, popStd2:float, n1:int, n2:int, tail:int, a:float, sig:int=3):
   """ Section 4.1.1 Two-sample z-test for population means
       The z-test can also be used to determine whether the means of two independent populations are
       the same when the population standard deviations are known. When performing a hypothesis test
@@ -25,7 +26,7 @@ def Ztest2(sampleMean1:float, sampleMean2:float, popStd1:float, popStd2:float, n
   print(f"{p = :.6f}")
   print("Fails to reject null hypothesis" if p > a else "Rejects null hypothesis")
   
-def pairedTTest(sampleMeanDifference:float, hypMeanDifference:float, sampleStd:float, n:int, tail:int, a:float, sig:int=3):
+def PairedTTest(sampleMeanDifference:float, hypMeanDifference:float, sampleStd:float, n:int, tail:int, a:float, sig:int=3):
   """ Section 4.1.2 Two-sample t-test
        In a paired t-test or dependent t-test, a sample taken from one population is exposed to two different treatments. The main idea is that measurements are recorded from the same group, usually before and after a treatment is applied or when each of two treatments is applied. Ex: A group of professional cycling athletes is selected for a study on the effects of caffeine dosage on exhaustion times. The populations are the cyclists for each of two dosages. The samples are the measured exhaustion times for each dosage, which implies dependence because the measurements were taken from the same group.
   """
@@ -62,9 +63,17 @@ def UnpairedTTest(sampleMean1:float, sampleMean2:float, hypSampleMean1:float, hy
   print(f"{p = :.6f}")
   print("Fails to reject null hypothesis" if p > a else "Rejects null hypothesis")
 
-def ZTest2(samp1:float, n1:int, samp2:float, n2:int, tail:int, a:float, sig:int=3):
-  """ """
-  p1, p2, p = samp1 / n1, samp2 / n2, (samp1 + samp2) / (n1 + n2)
+def ZTest2Prop(samp1:float, n1:int, samp2:float, n2:int, tail:int, a:float, sig:int=3):
+  """ Section 4.2.1 Hypothesis test for the difference between two population proportions
+      The z-test can also be used to determine whether the proportions of two distinct populations
+      are the same. 
+      Where p1 is the probability of success in the first sample, p2 is the probability of success
+      in the second sample, p is the overall probability of success when two samples are combined,
+      n1 is the size of the first sample, and n2 is the size of the second sample.
+  """
+  p1 = round(samp1 / n1, sig)
+  p2 = round(samp2 / n2, sig)
+  p = round((samp1 + samp2) / (n1 + n2), sig)
   if(samp1 < 5):
     print(f"The first proportion is too small. {n1}*{p1} < 5.")
     return 0
@@ -77,13 +86,17 @@ def ZTest2(samp1:float, n1:int, samp2:float, n2:int, tail:int, a:float, sig:int=
   if(n2 - samp2 < 5):
     print(f"The second proportion is too large. {n2}*{p2} > {n2} - 5.")
     return 0
-  z = (p1 - p2 - 0) / (p * (1 - p) * (1 / n1 + 1 / n2)) ** 0.5 
+  print(f"{p1 = :.{sig}f}")
+  print(f"{p2 = :.{sig}f}")
+  print(f"p^ = {p:.{sig}f}")
+  z = round((p1 - p2 - 0) / (p * (1 - p) * (1 / n1 + 1 / n2)) ** 0.5, sig)
+  ZTest(z, tail, a, sig)
         
 #==================================================================================================
 
 
-def section4():
-  section = "normalDistributionDefinition"
+def Section4():
+  section = "Example 4.2.1: Gender and voting"
 
   if section == "":
     print(f"{0:.3f}")
@@ -97,8 +110,8 @@ def section4():
   elif section == "":
     print(f"{0:.3f}")
 
-  elif section == "":
-    print(f"{0:.3f}")
+  elif section == "Example 4.2.1: Gender and voting":
+    ZTest2Prop(70, 132, 63, 105, 0, 0.05, 3)
 
   elif section == "normalDistributionDefinition":
     from Module24NormalDistribution import normalDistributionDefinition as gauss
@@ -106,7 +119,7 @@ def section4():
 
   elif section == "CA4.1.1: Hypothesis test for the difference between two population means":
     #UnpairedTTest(130, 126, 0, 0, 5, 3, 12, 12, 0, 0.01, 3)
-    pairedTTest(84-81, 0, 6, 11, 0, 0.01, 3)
+    PairedTTest(84-81, 0, 6, 11, 0, 0.01, 3)
 
   elif section == "zyDE 4.1.2: Unpaired t-test":
     """ The st.ttest_ind(x, y) command takes two arrays or DataFrame columns x and y as inputs and
@@ -141,16 +154,16 @@ def section4():
     pass
 
   elif section == "PA4.1.1: Commute times":
-    Ztest2(5.35, 4.95, 0.5, 0.8, 40, 50, 1, 0.05, 4)
+    ZTest2(5.35, 4.95, 0.5, 0.8, 40, 50, 1, 0.05, 4)
 
   elif section == "Example 4.1.2: Extrasensory perception":
-    Ztest2(12, 10, 4.5, 4.0, 50, 60, 0, 0.05)
+    ZTest2(12, 10, 4.5, 4.0, 50, 60, 0, 0.05)
 
   elif section == "Example 4.1.1: Candle burn times":
-    Ztest2(27.5, 26.0, 2.5, 3.5, 100, 100, 1, 0.05)
+    ZTest2(27.5, 26.0, 2.5, 3.5, 100, 100, 1, 0.05)
 
 
 if(__name__ == "__main__"):
   print("Imports loaded!")
-  section4()
+  Section4()
   print("Goodbye!")

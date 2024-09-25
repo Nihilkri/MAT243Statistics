@@ -94,12 +94,12 @@ def GuaranteedSampleSize(c:float, std:float, marginOfError:float, pop:bool, p:fl
   return n
 
 def ZTest(z:float, tail:int, a:float, sig:int=3):
-  print(f"{z = :.6f}")
+  print(f"{z = :.{sig}f}")
   if tail == 0:
     p = st.norm.cdf(-abs(z), 0, 1) + st.norm.sf(abs(z), 0, 1)
   else:
     p = st.norm.cdf(-tail * z, 0, 1)
-  print(f"{p = :.6f}")
+  print(f"{p = :.{sig}f}")
   print("Fails to reject null hypothesis" if p > a else "Rejects null hypothesis")
 
 def TTest(t:float, n:int, tail:int, a:float, sig:int=3):
