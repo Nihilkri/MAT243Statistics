@@ -1,4 +1,3 @@
-from scipy.sparse import dia
 from Basic import *
 from Module3ConfidenceIntervals import ZTest, TTest
 import scipy.stats as st
@@ -96,7 +95,6 @@ def ZTest2Prop(samp1:float, n1:int, samp2:float, n2:int, tail:int, a:float, sig:
   ZTest(z, tail, a, sig)
         
 #==================================================================================================
-
 
 def Section4():
   section = "4-4 Response"

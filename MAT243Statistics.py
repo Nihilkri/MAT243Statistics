@@ -13,10 +13,10 @@
 # import seaborn as sns
 # #print("Seaborn loaded")
 # import quandl as qn
-from Module4HypothesisTestTwo import *
+from Module5LinearRegression import *
 
 if(__name__ == "__main__"):
   print("Imports loaded!")
-  Section4()
+  Section5()
   print("Goodbye!")
   
