@@ -99,10 +99,15 @@ def ZTest2Prop(samp1:float, n1:int, samp2:float, n2:int, tail:int, a:float, sig:
 
 
 def Section4():
-  section = "4-4 Discussion"
+  section = "4-4 Response"
 
   if section == "":
     print(f"{0:.3f}")
+
+  elif section == "4-4 Response":
+    ZTest(-1.048, 0, 0.05, 3)
+    ZTest(0.5, 0, 0.05, 3)
+    ZTest(00, 0, 0.05, 3)
 
   elif section == "4-4 Discussion":
     from Calculus import np
