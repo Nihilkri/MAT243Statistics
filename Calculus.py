@@ -60,8 +60,16 @@ def Gaussian(x:np.ndarray, mean:float, std:float, skl:float) -> np.ndarray:
 def Students(x:np.ndarray, mean:float, std:float, df:float) -> np.ndarray:
   return ((1.0 + x ** 2.0 / df) ** (-(df + 1.0) / 2.0) / (df ** 0.5 * sp.beta(0.5, df / 2.0)))
 
-def Const(x:np.ndarray) -> np.ndarray:
-  return np.linspace(0.125, 0.125, len(x))
+def Const(x:np.ndarray, c:float) -> np.ndarray:
+  return np.linspace(c, c, len(x))
+
+def Delta(x:np.ndarray, c:float, v:float = 1.0) -> np.ndarray:
+  y = np.zeros_like(x)
+  for i in range(1, len(x)):
+    if x[i] > c:
+      y[i - 1] = v
+      break
+  return y
 
 def Dice(xs:np.ndarray, n:int, d:int) -> np.ndarray:
   lxs = len(xs)
@@ -119,6 +127,12 @@ def ExpectedValue(f, params, lx:float, rx:float, r:int = 1048577) -> np.ndarray:
   ys *= xs
   dx = (rx - lx) / r
   return np.sum(ys) * dx
+
+def PDF(dat:np.ndarray) -> tuple[np.ndarray[any], np.ndarray[any]]:
+  lx = np.min(dat)
+  rx = np.max(dat)
+  xs, ys = np.histogram(dat, 1024)
+  return xs, ys
 
 def CDF(f, params, lx:float, rx:float, r:int = 1048577) -> np.ndarray:
   xs, ys = Func(f, params, lx, rx, r)

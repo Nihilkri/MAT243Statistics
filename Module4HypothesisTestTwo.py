@@ -1,4 +1,5 @@
-#from Basic import *
+from scipy.sparse import dia
+from Basic import *
 from Module3ConfidenceIntervals import ZTest, TTest
 import scipy.stats as st
 #import Calculus
@@ -98,13 +99,81 @@ def ZTest2Prop(samp1:float, n1:int, samp2:float, n2:int, tail:int, a:float, sig:
 
 
 def Section4():
-  section = "CA4.2.1: Hypothesis test for the difference between two population proportions"
+  section = "4-4 Discussion"
 
   if section == "":
     print(f"{0:.3f}")
 
-  elif section == "":
-    print(f"{0:.3f}")
+  elif section == "4-4 Discussion":
+    from Calculus import np
+    print([1, 2, 3] + [4])
+    print(np.concatenate([np.array([1, 2, 3]), np.array([4])]))
+    dat1 = np.array([
+      2.375095026938485, 2.5743268497449394, 2.1787695858587885, 2.5496399367016376, 2.088213282381755,
+      3.1390782388863148, 2.255904840042252, 3.0140920529486794, 1.500945082908399, 3.1658620163718387,
+      1.759487728399665, 2.9355242950384257, 2.5703111149486713, 2.262466928267701, 3.045180857441924,
+      2.6309144792840398, 2.245912479894006, 1.7422111955495443, 2.9986486616499857, 1.6894223317294863,
+      2.4105653631242285, 3.1206521148469384, 2.329282140716035, 1.4079987998053123, 2.420572386962487,
+      2.6709578565673646, 1.855229864128511, 1.8833175253897338, 1.954341051172483, 2.8621243844976254,
+      3.259942674689241, 2.3880490764966242, 2.6358483777668544, 2.921285952150814, 1.8706375381388525,
+      3.01405498016116, 2.2671053297632304, 2.2513995681828893, 2.6269320039838977, 2.5218784181982463,
+      2.9579669116330747, 3.3748388030879743, 2.246364845377377, 1.8143836553610286, 2.263211082784322,
+      2.6274919834620984, 2.2303526769032227, 2.4063025176724477, 2.6160324753821365, 1.5649691989033314
+    ])
+    dat2 = np.array([
+      3.3603522697293493, 1.9388275286311458, 3.0987918836893615, 2.0841825125353495, 1.6375493251110278,
+      4.044657840491528, 1.877322428564296, 2.897588378463085, 3.1554606291143266, 1.4278769844409869,
+      2.19045243620031, 2.6029449878585007, 2.603477170137309, 2.172476783624875, 2.440130251309244,
+      1.8249511195039996, 3.2145566188078183, 3.4718055592695, 3.873943081411059, 1.830489139125068,
+      1.9812388842531896, 1.6921172557789466, 1.5137082866479878, 2.484017089907396, 2.349044702352281,
+      1.6201424471063373, 2.751433998998887, 3.181778446918358, 2.9425252527534984, 3.5502267050887486,
+      2.484748468742191, 1.9541451741491045, 3.0742189758328835, 3.5239971988300782, 2.2589833658924126,
+      2.5389181123709155, 3.596263488648441, 3.2635013379648363, 3.1884614991388407, 2.890590916092404,
+      2.860631035830941, 2.5708179421637993, 2.8563230805388096, 2.702528914278585, 3.2841456993741946,
+      3.2398930096454563, 1.736790302265823, 3.493579726805542, 2.7791544546719438, 2.3358229166985125
+    ])
+    dat = np.concatenate([dat1, dat2])
+    samp1 = len([s for s in dat1 if s < 2.20])
+    samp2 = len([s for s in dat2 if s < 2.20])
+    n1, mean1, std1 = MeanStd(dat1)
+    n2, mean2, std2 = MeanStd(dat2)
+    print(f"{mean1 = }")
+    print(f"{mean2 = }")
+    print(f"{std1 = }")
+    print(f"{std2 = }")
+    from Module3ConfidenceIntervals import ConfidenceInterval
+    print(f"{FormatCI(ConfidenceInterval(0.95, mean1, std1, n1, False))}")
+    print(f"{FormatCI(ConfidenceInterval(0.95, mean2, std2, n2, False))}")
+    ZTest2Prop(samp1, n1, samp2, n2, 0, 0.05, 3)
+    from Calculus import Plot, Const, PDF, Delta, Gaussian
+    xs = np.linspace(0, n1, n1)
+    ys1 = sorted(dat1)
+    ys2 = sorted(dat2)
+    f = [
+         (xs, ys1, 'r', False),
+         (xs, ys2, 'b', False),
+         (xs, Const(xs, mean1), 'm', False),
+         (xs, Const(xs, mean2), 'c', False),
+         (xs, Delta(xs, 24, 5.0), 'w', False),
+         (xs, Delta(xs, 25, 5.0), 'w', False),
+         (xs, Delta(xs, 26, 5.0), 'w', False)
+        ]
+    #Plot(f, "Bearing Diameters", "Sample #", "Diameter in cm")
+    lx, rx, r = np.min(dat), np.max(dat), 125#1048577
+    xs = np.linspace(lx, rx, r)
+    ys1 = np.concatenate([np.histogram(ys1, xs, density=True)[0], [0]])
+    ys2 = np.concatenate([np.histogram(ys2, xs, density=True)[0], [0]])
+    f = [
+         (xs, ys1, 'r', False),
+         (xs, ys2, 'b', False),
+         (xs, Gaussian(xs, mean1, std1, 1.0), 'm', False),
+         (xs, Gaussian(xs, mean2, std2, 1.0), 'c', False),
+         (xs, Delta(xs, mean1, 1.0), 'm', False),
+         (xs, Delta(xs, mean2, 1.0), 'c', False)
+        ]
+    Plot(f, "Bearing Diameters", "Diameter in cm", "Probability")
+
+
 
   elif section == "CA4.2.1: Hypothesis test for the difference between two population proportions":
     q = 2
