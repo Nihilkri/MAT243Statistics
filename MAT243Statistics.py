@@ -16,7 +16,6 @@
 from Module5LinearRegression import *
 
 if(__name__ == "__main__"):
-  print("Imports loaded!")
   Section5()
-  print("Goodbye!")
+  print("\nGoodbye!")
   

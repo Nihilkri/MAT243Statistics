@@ -1,5 +1,8 @@
 import math
 import numpy as np
+import scipy.stats as st
+import pandas as pd
+print("Imports loaded!\n")
 
 
 squared = chr(0x00B2)
@@ -28,6 +31,26 @@ def MeanStd(dat:list, sample:bool = True):
   sumsqd = sum([(x - mean) ** 2 for x in dat])
   smpstd = math.sqrt(sumsqd / (n - (1 if sample else 0)))
   return n, mean, smpstd
+
+def ZTest(z:float, tail:int, a:float, sig:int=3):
+  print(f"{z = :.{sig}f}")
+  if tail == 0:
+    p = st.norm.cdf(-abs(z), 0, 1) + st.norm.sf(abs(z), 0, 1)
+  else:
+    p = st.norm.cdf(-tail * z, 0, 1)
+  print(f"{p = :.{sig}f}")
+  print("Fails to reject null hypothesis" if p > a else "Rejects null hypothesis")
+
+def TTest(t:float, n:int, tail:int, a:float, sig:int=3):
+  print(f"{t = :.{sig}f}")
+  df = n - 1
+  print(f"{df = }")
+  if tail == 0:
+    p = st.t.cdf(-abs(t), df, 0, 1) + st.t.sf(abs(t), df, 0, 1)
+  else:
+    p = st.t.cdf(-tail * t, df, 0, 1)
+  print(f"{p = :.6{sig}f}")
+  print("Fails to reject null hypothesis" if p > a else "Rejects null hypothesis")
 
 def stats(dat:list):
   """ The list of statistics on a dataset, from sections 1.12 and 1.13 """

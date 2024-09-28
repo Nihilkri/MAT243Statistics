@@ -1,7 +1,4 @@
 from Basic import *
-from Module3ConfidenceIntervals import ZTest, TTest
-import scipy.stats as st
-#import Calculus
 
 def ZTest2(sampleMean1:float, sampleMean2:float, popStd1:float, popStd2:float, n1:int, n2:int, tail:int, a:float, sig:int=3):
   """ Section 4.1.1 Two-sample z-test for population means
@@ -16,33 +13,14 @@ def ZTest2(sampleMean1:float, sampleMean2:float, popStd1:float, popStd2:float, n
   stderr = round((popStd1 ** 2 / n1 + popStd2 ** 2 / n2) ** 0.5, sig)
   print(f"{stderr = :.6f}")
   z = round((sampleMean1 - sampleMean2 - 0) / stderr, sig)
-  print(f"{z = :.6f}")
-  if tail == -1:
-    p = st.norm.cdf(z, 0, 1)
-  elif tail == 1:
-    p = st.norm.sf(z, 0, 1)
-  else:
-    p = st.norm.cdf(-abs(z), 0, 1) + st.norm.sf(abs(z), 0, 1)
-  print(f"{p = :.6f}")
-  print("Fails to reject null hypothesis" if p > a else "Rejects null hypothesis")
+  ZTest(z, tail, a, sig)
   
 def PairedTTest(sampleMeanDifference:float, hypMeanDifference:float, sampleStd:float, n:int, tail:int, a:float, sig:int=3):
   """ Section 4.1.2 Two-sample t-test
        In a paired t-test or dependent t-test, a sample taken from one population is exposed to two different treatments. The main idea is that measurements are recorded from the same group, usually before and after a treatment is applied or when each of two treatments is applied. Ex: A group of professional cycling athletes is selected for a study on the effects of caffeine dosage on exhaustion times. The populations are the cyclists for each of two dosages. The samples are the measured exhaustion times for each dosage, which implies dependence because the measurements were taken from the same group.
   """
   t = round((sampleMeanDifference - hypMeanDifference) / (sampleStd / n ** 0.5), sig)
-  print(f"{t = :.6f}")
-  df = n - 1
-  print(f"{df = }")
-  if tail == -1:
-    p = st.t.cdf(t, df, 0, 1)
-  elif tail == 1:
-    p = st.t.sf(t, df, 0, 1)
-  else:
-    p = st.t.cdf(-abs(t), df, 0, 1) + st.t.sf(abs(t), df, 0, 1)
-  print(f"{p = :.6f}")
-  print("Fails to reject null hypothesis" if p > a else "Rejects null hypothesis")
-  
+  TTest(t, n, tail, a, sig)
   
 def UnpairedTTest(sampleMean1:float, sampleMean2:float, hypSampleMean1:float, hypSampleMean2:float, sampleStd1:float, sampleStd2:float, n1:int, n2:int, tail:int, a:float, sig:int=3):
   """ Section 4.1.2 Two-sample t-test
@@ -51,17 +29,7 @@ def UnpairedTTest(sampleMean1:float, sampleMean2:float, hypSampleMean1:float, hy
   stderr = round((sampleStd1 ** 2 / n1 + sampleStd2 ** 2 / n2) ** 0.5, sig)
   print(f"{stderr = :.6f}")
   t = round((sampleMean1 - sampleMean2 - (hypSampleMean1 - hypSampleMean2)) / stderr, sig)
-  print(f"{t = :.6f}")
-  df = n1 + n2 - 2
-  print(f"{df = }")
-  if tail == -1:
-    p = st.t.cdf(t, df, 0, 1)
-  elif tail == 1:
-    p = st.t.sf(t, df, 0, 1)
-  else:
-    p = st.t.cdf(-abs(t), df, 0, 1) + st.t.sf(abs(t), df, 0, 1)
-  print(f"{p = :.6f}")
-  print("Fails to reject null hypothesis" if p > a else "Rejects null hypothesis")
+  TTest(t, n1 + n2 - 1, tail, a, sig)
 
 def ZTest2Prop(samp1:float, n1:int, samp2:float, n2:int, tail:int, a:float, sig:int=3):
   """ Section 4.2.1 Hypothesis test for the difference between two population proportions

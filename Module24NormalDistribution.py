@@ -1,6 +1,4 @@
 from Basic import *
-import scipy.stats as st
-
 
 def generateallpermutations(dat:list, sampn:int, dbug:bool = False) -> list:
   popn = len(dat)

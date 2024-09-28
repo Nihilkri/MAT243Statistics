@@ -1,7 +1,4 @@
 from Basic import *
-import scipy.stats as st
-import Calculus
-
 
 def Zstar(c:float) -> float:
   """ Table 3.2.1: Critical values for common confidence levels. """
@@ -92,26 +89,6 @@ def GuaranteedSampleSize(c:float, std:float, marginOfError:float, pop:bool, p:fl
     df = int(nstar) - 1
     n = (Tstar(c, df) * sampleStd / marginOfError) ** 2
   return n
-
-def ZTest(z:float, tail:int, a:float, sig:int=3):
-  print(f"{z = :.{sig}f}")
-  if tail == 0:
-    p = st.norm.cdf(-abs(z), 0, 1) + st.norm.sf(abs(z), 0, 1)
-  else:
-    p = st.norm.cdf(-tail * z, 0, 1)
-  print(f"{p = :.{sig}f}")
-  print("Fails to reject null hypothesis" if p > a else "Rejects null hypothesis")
-
-def TTest(t:float, n:int, tail:int, a:float, sig:int=3):
-  print(f"{t = :.6f}")
-  df = n - 1
-  print(f"{df = }")
-  if tail == 0:
-    p = st.t.cdf(-abs(t), df, 0, 1) + st.t.sf(abs(t), df, 0, 1)
-  else:
-    p = st.t.cdf(-tail * t, df, 0, 1)
-  print(f"{p = :.6f}")
-  print("Fails to reject null hypothesis" if p > a else "Rejects null hypothesis")
 
 def HypTest(a:float, sampleMean:float, hypPopMean:float, std:float, n:int, tail:int, pop:bool, sig:int=3):
   """ Section 3.5.1 z-test for population means

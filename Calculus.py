@@ -222,8 +222,8 @@ def CalcTest():
     f = [(xs, gaussian, '#FFFFFF', False),
          (xs, ys[0][2], 'r', False),
          (xs, ys[1][2], 'g', False),
-         (xs, ys[2][2], 'b', False),
-         (xs, ys[3][2], '#8000FF', False),
-         (xs, ys[4][2], '#FF00FF', False)]
+         (xs, ys[2][2], 'b', False)]
+         #(xs, ys[3][2], '#8000FF', False),
+         #(xs, ys[4][2], '#FF00FF', False)]
     Plot(f, f"{n}d{d} Weighted Distribution", "Value of the roll", "Number of rolls", None, None)
   
