@@ -1,6 +1,4 @@
 from Basic import *
-import math
-import numpy as np
 import matplotlib.pyplot as plt
 import scipy.special as sp
 import random

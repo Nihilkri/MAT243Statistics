@@ -1,12 +1,14 @@
 import math
+import numpy as np
 
 
+squared = chr(0x00B2)
 epsilon = chr(0x3B5)
 theta = chr(0x03B8)
 sigma = chr(0x3C3)
 Sigma = chr(0x3A3)
 
-def abandc(abc:list) -> str:
+def abandc(abc:list, noand:bool = False) -> str:
   """ Converts [A, B, C] into 'A, B, and C' """
   n:int = len(abc)
   if(n == 0): return s
@@ -14,7 +16,7 @@ def abandc(abc:list) -> str:
   if(n == 1): return s
   for a in range(1, n - 1):
     s += ", " + str(abc[a])
-  s += ("," if n > 2 else "") + " and " + str(abc[-1])
+  s += ("," if n > 2 else "") + (" " if noand else " and ") + str(abc[-1])
   return s
 
 def MeanStd(dat:list, sample:bool = True):

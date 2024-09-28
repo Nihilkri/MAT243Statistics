@@ -1,8 +1,7 @@
 from Basic import *
 
 
-
-def SimpleLinearRegression(dat:list, b0:float, b1:float):
+def SimpleLinearRegression(x:np.ndarray, y:np.ndarray, b0:float, b1:float):
   """ Section 5.1.1 Regression Lines
         A simple linear regression is a way to model the linear relationship between two
         quantitative variables, using a line drawn through those variables' data points,
@@ -13,26 +12,31 @@ def SimpleLinearRegression(dat:list, b0:float, b1:float):
         squared errors is the sum of the differences between the Y values of the data points and
         the values obtained from the regression line.
   """
-  xs, ys = dat
-  lx, ly = len(xs), len(ys)
+  lx, ly = len(x), len(y)
   if lx != ly:
     print("X Y mismatched!")
     return None
-  sse = 0
-  for x, y in zip(xs, ys):
-    e = b0 + b1 * x
-    ep = y - e
-    se = ep ** 2
-    sse += se
-    print(f"{f"Expected Value E({x:4}) = ":28}{e:7,}")
-    print(f"{f"Regression Error {epsilon} = ":28}{ep:7,}")
-    print(f"{f"Squared Error {epsilon}^2 = ":28}{se:7,}")
-  print(f"{f"Sum of Squared Errors {Sigma}{epsilon}^2 = ":28}{sse:7,}")
+  e = b0 + b1 * x  # [b0 + b1 * xi for xi in x]
+  ep = y - e  # [yi - ei for yi, ei in zip(y, e)]
+  se = ep ** 2  # [epi ** 2 for epi in ep]
+  sse = sum(se)
+  if lx <= 10:
+    import pandas as pd
+    epH = "   " + epsilon
+    seH = "  " + epsilon + squared
+    dat = {'   X':x, '   Y':y, 'E(X)':e, epH:ep, seH:se}
+    df = pd.DataFrame(dat)
+    print(f"   Expected Value E(X)")
+    print(f"   Regression Error {epsilon}")
+    print(f"   Squared Error {epsilon}{squared}")
+    print(df)
+
+  print(f"{f"Sum of Squared Errors {Sigma}{epsilon}{squared} = "}{sse:7,}")
         
 #==================================================================================================
 
 def Section5():
-  section = "PA5.1.9: Calculating sum of squared errors for a regression line"
+  section = "SLR PA5.1.9: Calculating sum of squared errors for a regression line"
 
   if section == "":
     print(f"{0:.3f}")
@@ -43,17 +47,21 @@ def Section5():
   elif section == "":
     print(f"{0:.3f}")
 
-  elif section == "PA5.1.9: Calculating sum of squared errors for a regression line":
-    dat = [[0, 3, 7, 10], [5, 5, 27, 31]]
-    SimpleLinearRegression(dat, 2, 3)
+  elif section == "SLR PA5.1.9: Calculating sum of squared errors for a regression line":
+    x, y = [0, 3, 7, 10], [5, 5, 27, 31]
+    b0, b1 = 2, 3
 
-  elif section == "Example 5.1.1: Computing the sum of squared errors":
-    dat = [[0, 3, 7, 10], [5, 5, 27, 31]]
-    SimpleLinearRegression(dat, 7, 2)
+  elif section == "SLR Example 5.1.1: Computing the sum of squared errors":
+    x, y = [[0, 3, 7, 10], [5, 5, 27, 31]]
+    b0, b1 = 7, 2
 
-  elif section == "PA5.1.6: Making predictions":
-    dat = [[2000, 2200], [271000, 275000]]
-    SimpleLinearRegression([(2000, 271000), (2200, 275000)], 190000, 40)
+  elif section == "SLR PA5.1.6: Making predictions":
+    x, y = [2000, 2200], [271000, 275000]
+    b0, b1 = 190000, 40
+
+  if section[:3] == "SLR":
+    x, y = np.array(x), np.array(y)
+    SimpleLinearRegression(x, y, b0, b1)
 
 
 
