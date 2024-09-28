@@ -97,7 +97,7 @@ def PopCorrTTest(r:float, n:int, tail:int, a:float, sig:int=3):
 #==================================================================================================
 
 def Section5():
-  section = "Example 5.3.2: Using the t-test for population correlation coefficient"
+  section = "Python-Function 5.3.1: scipy.stats.pearsonr(x,y)"
 
   if section == "":
     from Calculus import CalcTest
@@ -115,8 +115,11 @@ def Section5():
   elif section == "":
     print(f"{0:.3f}")
 
-  elif section == "":
-    print(f"{0:.3f}")
+  elif section == "Python-Function 5.3.1: scipy.stats.pearsonr(x,y)":
+    scores = pd.read_csv("ExamScores.csv")
+    x = scores['Exam1']
+    y = scores['Exam4']
+    print(st.pearsonr(x, y))
 
   elif section == "Example 5.3.2: Using the t-test for population correlation coefficient":
     scores = pd.read_csv("ExamScores.csv")
