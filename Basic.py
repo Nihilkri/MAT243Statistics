@@ -1,7 +1,10 @@
 import math
 
 
+epsilon = chr(0x3B5)
+theta = chr(0x03B8)
 sigma = chr(0x3C3)
+Sigma = chr(0x3A3)
 
 def abandc(abc:list) -> str:
   """ Converts [A, B, C] into 'A, B, and C' """

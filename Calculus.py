@@ -1,12 +1,9 @@
+from Basic import *
 import math
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.special as sp
 import random
-
-theta = chr(0x03B8)
-sigma = chr(0x3C3)
-
 
 def plotSine():
   """ Plots a basic sine wave """
