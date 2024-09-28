@@ -43,7 +43,7 @@ def SimpleLinearRegression(x:np.ndarray, y:np.ndarray, b0:float, b1:float):
   print(f"Sum of Absolute Residuals {Sigma}|{epsilon}| = {sar:7,}")
   print(f"Sum of Squared Errors {Sigma}{epsilon}{squared} = {sse:7,}")
 
-def CorrelationCoefficient(x:np.ndarray, y:np.ndarray, verbose:bool=False) -> float:
+def CorrelationCoefficient(x:np.ndarray, y:np.ndarray, verbose:int = 0) -> float:
   """ 5.3 Correlation and coefficient of determination
       Correlation describes the association or dependence between two variables. A positive
       correlation between two variables means that as one variable increases, the other variable
@@ -65,14 +65,14 @@ def CorrelationCoefficient(x:np.ndarray, y:np.ndarray, verbose:bool=False) -> fl
   rdx = (n * sx2 - sx ** 2) ** 0.5
   rdy = (n * sy2 - sy ** 2) ** 0.5
   r = rn / (rdx * rdy)
-  if verbose:
+  if verbose > 0:
     h = ['X', 'Y', 'XY', 'X2', 'Y2']
     dat = dict(zip(h, v))
     # dat = {'X':x, 'Y':y, 'XY':xy...}
     sums = dict(zip(h, s))
     df = pd.DataFrame(dat)
     df.loc[Sigma] = pd.Series(sums)
-    print(df)
+    print(df.head(verbose))
     print("r =", r)
     ar = abs(r)
     print("No" if ar < 0.001 else ((
@@ -81,19 +81,25 @@ def CorrelationCoefficient(x:np.ndarray, y:np.ndarray, verbose:bool=False) -> fl
           "Moderate" if ar > 0.40 else
           "Weak") + (" Positive" if r > 0 else
           " Negative")), "Correlation")
-
   return r
 
-        
+def PopCorrTTest(r:float, n:int, tail:int, a:float, sig:int=3):
+  """ Section 5.3.2 t-test for the population correlation coefficient
+      The distribution of the Pearson correlation coefficients for samples of size n follows a
+      t-distribution with n - 2 degrees of freedom. When determining whether a linear relationship
+      or association exist, the t-test for population correlation coefficient is useful.
+      The t-test for the population correlation coefficient is performed as follows.
+  """
+  df = n - 2
+  t = r * df ** 0.5 / (1 - r ** 2) ** 0.5
+  TTest(t, df, tail, a, sig)
+
 #==================================================================================================
 
 def Section5():
-  section = "zyDE 5.3.1: corr()"
+  section = "Example 5.3.2: Using the t-test for population correlation coefficient"
 
   if section == "":
-    print(f"{0:.3f}")
-
-  elif section == "":
     from Calculus import CalcTest
     CalcTest()
 
@@ -111,6 +117,15 @@ def Section5():
 
   elif section == "":
     print(f"{0:.3f}")
+
+  elif section == "Example 5.3.2: Using the t-test for population correlation coefficient":
+    scores = pd.read_csv("ExamScores.csv")
+    x = scores['Exam1'].to_numpy()
+    y = scores['Exam4'].to_numpy()
+    r = CorrelationCoefficient(x, y, 5)
+    print(f"{r = }")
+    n, tail, a, sig = 50, 1, 0.05, 3
+    PopCorrTTest(r, n, tail, a, sig)
 
   elif section == "zyDE 5.3.1: corr()":
     scores = pd.read_csv("ExamScores.csv")

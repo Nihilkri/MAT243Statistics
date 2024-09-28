@@ -1,8 +1,20 @@
+print("Loading ", end="")
 import math
+print("Math, ", end="")
 import numpy as np
+print("Numpy, ", end="")
 import scipy.stats as st
+print("Scipy, ", end="")
 import pandas as pd
-print("Imports loaded!\n")
+print("Pandas, ", end="")
+# import matplotlib.pyplot as plt
+# #print("Pyplot loaded")
+# import sklearn as sks
+# #print("Scikit-learn loaded")
+# import seaborn as sns
+# #print("Seaborn loaded")
+# import quandl as qn
+# print("Imports loaded!\n")
 
 
 squared = chr(0x00B2)
@@ -41,15 +53,14 @@ def ZTest(z:float, tail:int, a:float, sig:int=3):
   print(f"{p = :.{sig}f}")
   print("Fails to reject null hypothesis" if p > a else "Rejects null hypothesis")
 
-def TTest(t:float, n:int, tail:int, a:float, sig:int=3):
+def TTest(t:float, df:int, tail:int, a:float, sig:int=3):
   print(f"{t = :.{sig}f}")
-  df = n - 1
   print(f"{df = }")
   if tail == 0:
     p = st.t.cdf(-abs(t), df, 0, 1) + st.t.sf(abs(t), df, 0, 1)
   else:
     p = st.t.cdf(-tail * t, df, 0, 1)
-  print(f"{p = :.6{sig}f}")
+  print(f"{p = :.{sig}f}")
   print("Fails to reject null hypothesis" if p > a else "Rejects null hypothesis")
 
 def stats(dat:list):

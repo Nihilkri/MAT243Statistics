@@ -20,7 +20,7 @@ def PairedTTest(sampleMeanDifference:float, hypMeanDifference:float, sampleStd:f
        In a paired t-test or dependent t-test, a sample taken from one population is exposed to two different treatments. The main idea is that measurements are recorded from the same group, usually before and after a treatment is applied or when each of two treatments is applied. Ex: A group of professional cycling athletes is selected for a study on the effects of caffeine dosage on exhaustion times. The populations are the cyclists for each of two dosages. The samples are the measured exhaustion times for each dosage, which implies dependence because the measurements were taken from the same group.
   """
   t = round((sampleMeanDifference - hypMeanDifference) / (sampleStd / n ** 0.5), sig)
-  TTest(t, n, tail, a, sig)
+  TTest(t, n - 1, tail, a, sig)
   
 def UnpairedTTest(sampleMean1:float, sampleMean2:float, hypSampleMean1:float, hypSampleMean2:float, sampleStd1:float, sampleStd2:float, n1:int, n2:int, tail:int, a:float, sig:int=3):
   """ Section 4.1.2 Two-sample t-test
