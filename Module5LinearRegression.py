@@ -13,11 +13,21 @@ def SimpleLinearRegression(x:np.ndarray, y:np.ndarray, b0:float, b1:float):
         A simple linear regression is a way to model the linear relationship between two
         quantitative variables, using a line drawn through those variables' data points,
         known as a regression line.
+
       Section 5.1.5 Least squares method
         Summing the absolute errors is one method to measure how far the line is from the points.
         Another method to measure error is by computing the sum of squared errors. The sum of
         squared errors is the sum of the differences between the Y values of the data points and
         the values obtained from the regression line.
+
+      Section 5.3.3 Coefficient of determination
+        Another quantity that shows how well a regression equation represents the data is the
+        coefficient of determination. The coefficient of determination, denoted by R^2, gives the
+        ratio of the variance in the response variable explained by the predictor variable.
+        Conceptually, the coefficient of determination is a measure of how closely the regression
+        line follows the pattern of the data. The farther the actual data points are from the
+        regression line, the less useful the line actually is in predicting the value of the
+        response variable.
   """
   lx, ly = len(x), len(y)
   if lx != ly:
@@ -42,16 +52,24 @@ def SimpleLinearRegression(x:np.ndarray, y:np.ndarray, b0:float, b1:float):
 
   print(f"Sum of Absolute Residuals {Sigma}|{epsilon}| = {sar:7,}")
   print(f"Sum of Squared Errors {Sigma}{epsilon}{squared} = {sse:7,}")
+  print(f"Mean of regression errors = {ep.mean()}")
+  meany = y.mean()
+  print(f"Mean of sample values = {meany}")
+  r2 = np.sum((ey - meany) ** 2) / np.sum((y - meany) ** 2)
+  print(f"Coefficient of determination R{squared} = {r2}")
+  print(f"Sqrt(R{squared}) = {r2 ** 0.5}")
+  print(f"     R   =", CorrelationCoefficient(x, y, 0))
+
 
 def CorrelationCoefficient(x:np.ndarray, y:np.ndarray, verbose:int = 0) -> float:
-  """ 5.3 Correlation and coefficient of determination
-      Correlation describes the association or dependence between two variables. A positive
-      correlation between two variables means that as one variable increases, the other variable
-      increases as well. A negative correlation between two variables means that as one variable
-      increases, the other variable decreases. The strength of correlation between a predictor
-      variable and a response variable can be measured by the correlation coefficient. The
-      population correlation coefficient is denoted by rho and the sample correlation coefficient
-      is denoted by R. The strength of correlation can be described by the absolute value of R.
+  """ Section 5.3.1 Correlation and coefficient of determination
+        Correlation describes the association or dependence between two variables. A positive
+        correlation between two variables means that as one variable increases, the other variable
+        increases as well. A negative correlation between two variables means that as one variable
+        increases, the other variable decreases. The strength of correlation between a predictor
+        variable and a response variable can be measured by the correlation coefficient. The
+        population correlation coefficient is denoted by rho and the sample correlation coefficient
+        is denoted by R. The strength of correlation can be described by the absolute value of R.
   """
   n, ly = len(x), len(y)
   if n != ly:
@@ -94,10 +112,19 @@ def PopCorrTTest(r:float, n:int, tail:int, a:float, sig:int=3):
   t = r * df ** 0.5 / (1 - r ** 2) ** 0.5
   TTest(t, df, tail, a, sig)
 
+def CoefficientOfDetermination(x:np.ndarray, y:np.ndarray, verbose:int = 0) -> float:
+  """ 
+  """
+  mean = y.mean()
+
+
+
+
+
 #==================================================================================================
 
 def Section5():
-  section = "Python-Function 5.3.1: scipy.stats.pearsonr(x,y)"
+  section = "Example 5.3.2: Using the t-test for population correlation coefficient"
 
   if section == "":
     from Calculus import CalcTest
@@ -123,8 +150,7 @@ def Section5():
 
   elif section == "Example 5.3.2: Using the t-test for population correlation coefficient":
     scores = pd.read_csv("ExamScores.csv")
-    x = scores['Exam1'].to_numpy()
-    y = scores['Exam4'].to_numpy()
+    x, y = scores['Exam1'], scores['Exam4']
     r = CorrelationCoefficient(x, y, 5)
     print(f"{r = }")
     n, tail, a, sig = 50, 1, 0.05, 3
