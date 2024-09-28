@@ -1,5 +1,14 @@
 from Basic import *
+import scipy.stats as st
+import pandas as pd
 
+
+def FormatLinregress(inp):
+  slope, intercept, r, p, se = inp
+  istderr = inp.intercept_stderr
+  names = ['Slope', 'Intercept', 'R Value', 'P Value', 'Standard Error', 'Intercept Standard Error']
+  values = [slope, intercept, r, p, se, istderr]
+  return {'Names':names, 'Values':values}
 
 def SimpleLinearRegression(x:np.ndarray, y:np.ndarray, b0:float, b1:float):
   """ Section 5.1.1 Regression Lines
@@ -16,27 +25,30 @@ def SimpleLinearRegression(x:np.ndarray, y:np.ndarray, b0:float, b1:float):
   if lx != ly:
     print("X Y mismatched!")
     return None
-  e = b0 + b1 * x  # [b0 + b1 * xi for xi in x]
-  ep = y - e  # [yi - ei for yi, ei in zip(y, e)]
-  se = ep ** 2  # [epi ** 2 for epi in ep]
-  sse = sum(se)
+  ey = b0 + b1 * x  # E(Y) Simple Linear Regression Function
+  ep = y - ey  # Y - E(Y) Regression Error
+  ar = np.abs(ep)  # Absolute Residuals
+  se = ep ** 2  # Squared Error
+  sar = sum(ar)  # Sum of the Absolute Residuals
+  sse = sum(se)  # Sum of the Squared Errors
   if lx <= 10:
-    import pandas as pd
     epH = "   " + epsilon
+    arH = " |" + epsilon + "|"
     seH = "  " + epsilon + squared
-    dat = {'   X':x, '   Y':y, 'E(X)':e, epH:ep, seH:se}
+    dat = {'   X':x, '   Y':y, 'E(Y)':ey, epH:ep, arH:ar, seH:se}
     df = pd.DataFrame(dat)
-    print(f"   Expected Value E(X)")
+    print(f"   Expected Value E(Y)")
     print(f"   Regression Error {epsilon}")
     print(f"   Squared Error {epsilon}{squared}")
     print(df)
 
-  print(f"{f"Sum of Squared Errors {Sigma}{epsilon}{squared} = "}{sse:7,}")
+  print(f"Sum of Absolute Residuals {Sigma}|{epsilon}| = {sar:7,}")
+  print(f"Sum of Squared Errors {Sigma}{epsilon}{squared} = {sse:7,}")
         
 #==================================================================================================
 
 def Section5():
-  section = "SLR PA5.1.9: Calculating sum of squared errors for a regression line"
+  section = "Python-Function 5.1.1: linregress(x,y)"
 
   if section == "":
     print(f"{0:.3f}")
@@ -44,8 +56,12 @@ def Section5():
   elif section == "":
     print(f"{0:.3f}")
 
-  elif section == "":
-    print(f"{0:.3f}")
+  elif section == "Python-Function 5.1.1: linregress(x,y)":
+    x = np.array([0, 3, 7, 10])
+    y = np.array([5, 5, 27, 31])
+    dat = st.linregress(x,y)
+    df = pd.DataFrame(FormatLinregress(dat))
+    print(df)
 
   elif section == "SLR PA5.1.9: Calculating sum of squared errors for a regression line":
     x, y = [0, 3, 7, 10], [5, 5, 27, 31]
