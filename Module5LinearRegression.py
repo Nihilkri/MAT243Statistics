@@ -118,7 +118,6 @@ def SimpleLinearRegression(x:np.ndarray, y:np.ndarray, b0:float=None, b1:float=N
   ssto = ssr + sse                  # Total Sum of Squares
   df = regdf + resdf                # Total Degrees of Freedom = n - 1
   r2 = ssr / tvar                   # Coefficient of Determination R^2
-  r = CorrelationCoefficient(x, y, 0)
   f = msr / mse                     # ANOVA F-statistic
   maxlen = int(np.log10(ssto) + 1)  # To format, take the length of the longest value
   intlen = maxlen + maxlen // 3     # Make room for commas
@@ -150,6 +149,8 @@ def SimpleLinearRegression(x:np.ndarray, y:np.ndarray, b0:float=None, b1:float=N
   print(f"Total Sum of Squares  SSR+SSE=SSTO = {ssto:{dmt}}")
   print(f"Coefficient of Determination    R{squared} = {r2:{dmt}}")
   print(f"{r2*100: .1f}% of variation in Y is accounted for by X")
+
+  r = CorrelationCoefficient(x, y, n)
   print(f"Sqrt(R{squared}) = {r2 ** 0.5:.{sig}f}")
   print(f"     R   = {r:.{sig}f}")
   PopCorrTTest(r, df + 1, 0, 0.10, sig)
