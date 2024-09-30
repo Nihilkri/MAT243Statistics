@@ -28,6 +28,7 @@ squared = "\u00B2"
 # Subscripts
 subi    = "\u1D62"
 sub0    = "\u2080"
+sub1    = "\u2081"
 # Diacritics
 hat     = "\u0302"
 bar     = "\u0304"

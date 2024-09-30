@@ -8,7 +8,7 @@ def FormatLinregress(inp):
   values = [slope, intercept, r, p, se, istderr]
   return {'Names':names, 'Values':values}
 
-def SimpleLinearRegression(x:np.ndarray, y:np.ndarray, b0:float, b1:float):
+def SimpleLinearRegression(x:np.ndarray, y:np.ndarray, b0:float=None, b1:float=None, tail:int=0, a:float=0.05, sig:float=6):
   """ Section 5.1.1 Regression Lines
         A simple linear regression is a way to model the linear relationship between two
         quantitative variables, using a line drawn through those variables' data points,
@@ -53,12 +53,40 @@ def SimpleLinearRegression(x:np.ndarray, y:np.ndarray, b0:float, b1:float):
         of X. A relatively small residual standard error indicates that the actual future value of
         Y is likely to be relatively close to the predicted value. Therefore, less residual
         standard error is better.
+
+      Section 5.5.6 The coefficient of determination
+        The coefficient of determination, denoted by R^2 is another measure of correlation. The
+        coefficient of determination is useful because the quantity measures the proportion of
+        total variation in the response variable, Y, that is accounted for by the linear regression
+        model. Intuitively, the value of R^2 can be viewed as a quantitative way of measuring
+        certainty when making predictions from a model. Although R^2 can easily be calculated by
+        squaring the Pearson correlation coefficient, R^2 can also be calculated from the values in
+        the ANOVA table: R^2 = (SSTO - SSE) / SSTO = SSR / SSTO.
+        SSTO and SSE measure different quantities:
+        * The best prediction of Y if one ignores X is the sample mean of Y, Ybar. Thus, the total
+        sum of squares, SSTO = Sigma(Y_i - Ybar)^2 measures the variation in Y ignoring X.
+        * The best prediction of Y based on the simple linear regression model is Yhat. Thus, the
+        residual sum of squares, SSE = Sigma(Y_i - Yhat)^2, measures the variation remaining in Y
+        after using X to predict Y.
+        The value of R^2 is typically expressed as a percentage between 0% and 100%:
+        * If a strong linear relationship exists between Y and X, using X to predict Y will leave
+        little variation remaining in Y. Then SSE will be small and R^2 will be high (generally
+        greater than 90%).
+        * Conversely, if a linear relationship does not exist between Y and X, using X to predict
+        Y will leave a lot of variation remaining in Y. Then SSE will be close to SSTO and R^2 will
+        be low (close to 0%).
   """
   n, ly = len(x), len(y)
   if n != ly:
     print("X Y mismatched!")
     return None
-  ybar = y.mean()     # Mean of the data's response variables
+  ybar = y.mean()     # Mean of the data's response variable
+  xbar = x.mean()     # Mean of the data's predictor variable
+  dx = x - xbar       # Deviation of x_i from the mean of x
+  dy = y - ybar       # Deviation of y_i from the mean of y
+  if b0 is None and b1 is None:
+    b1 = np.sum(dx * dy) / np.sum(dx ** 2)
+    b0 = ybar - b1 * xbar
   yhat = b0 + b1 * x  # E(Y) for pop, Yhat for sample, Simple Linear Regression Function
   ep = y - yhat       # Y - E(Y), Regression Error
   ar = np.abs(ep)     # Absolute Residual
@@ -90,33 +118,40 @@ def SimpleLinearRegression(x:np.ndarray, y:np.ndarray, b0:float, b1:float):
   ssto = ssr + sse                  # Total Sum of Squares
   df = regdf + resdf                # Total Degrees of Freedom = n - 1
   r2 = ssr / tvar                   # Coefficient of Determination R^2
+  r = CorrelationCoefficient(x, y, 0)
   f = msr / mse                     # ANOVA F-statistic
+  maxlen = int(np.log10(ssto) + 1)  # To format, take the length of the longest value
+  intlen = maxlen + maxlen // 3     # Make room for commas
+  declen = int(intlen + 1 + sig)    # Make room for decimals
+  fmt = f"{intlen},"                # Format the integers into a string
+  dmt = f"{declen},.{sig}f"         # Format the decimals into a string
   print(f"ANOVA Table:                       = ")
-  print(f"Number of Samples                n = {n:11,}")
-  print(f"Parameters                       p = {p:11,}")
-  print(f"Sum of Absolute Residuals     {Sigma}|{epsilon}| = {sar:11,.3f}")
+  print(f"Y-Intercept of Regression Line  {beta}{sub0} = {b0:{dmt}}")
+  print(f"Slope of Regression Line        {beta}{sub1} = {b1:{dmt}}")
+  print(f"Number of Samples                n = {n:{fmt}}")
+  print(f"Parameters                       p = {p:{fmt}}")
+  print(f"Sum of Absolute Residuals     {Sigma}|{epsilon}| = {sar:{dmt}}")
 
-  print(f"Residual Sum of Squares        {Sigma}{epsilon}{squared} = {sse:11,.3f}")
-  print(f"Residual Degrees of Freedom    n-p = {resdf:11,}")
-  print(f"Residual Mean Square           MSE = {mse:11,.3f}")
-  print(f"Regression Sum of Squares      SSR = {ssr:11,.3f}")
-  print(f"Regression Degrees of Freedom  p-1 = {regdf:11,}")
-  print(f"Regression Mean Square         MSR = {msr:11,.3f}")
-  print(f"Total Degrees of Freedom       n-1 = {df:11,}")
-  print(f"ANOVA F-statistic                F = {f:11,.3f}")
+  print(f"Residual Sum of Squares        {Sigma}{epsilon}{squared} = {sse:{dmt}}")
+  print(f"Residual Degrees of Freedom    n-p = {resdf:{fmt}}")
+  print(f"Residual Mean Square           MSE = {mse:{dmt}}")
+  print(f"Regression Sum of Squares      SSR = {ssr:{dmt}}")
+  print(f"Regression Degrees of Freedom  p-1 = {regdf:{fmt}}")
+  print(f"Regression Mean Square         MSR = {msr:{dmt}}")
+  print(f"Total Degrees of Freedom       n-1 = {df:{fmt}}")
+  print(f"ANOVA F-statistic                F = {f:{dmt}}")
 
-
-  print(f"Residual Standard Error          s = {s:11,.3f}")
-  print(f"Mean of Regression Errors        {epsilon}{bar}= {epbar:11,.3f}")
-  print(f"Mean of Sample Values            Y{bar}= {ybar:11,.3f}")
-  print(f"Explained Variance       {Sigma}(Y{hat}-Y{bar}){squared} = {ssr:11,.3f}")
-  print(f"Unexplained Variance      {Sigma}(Y-Y{hat}){squared} = {sse:11,.3f}")
-  print(f"Total Variance            {Sigma}(Y-Y{bar}){squared} = {tvar:11,.3f}")
-  print(f"Total Sum of Squares  SSR+SSE=SSTO = {ssto:11,.3f}")
-  print(f"Coefficient of Determination    R{squared} = {r2:11,.3f}")
-  print(f"Sqrt(R{squared}) = {r2 ** 0.5:.3f}")
-  print(f"     R   = {CorrelationCoefficient(x, y, 0):.3f}")
-
+  print(f"Residual Standard Error          s = {s:{dmt}}")
+  print(f"Mean of Regression Errors        {epsilon}{bar}= {epbar:{dmt}}")
+  print(f"Mean of Sample Values            Y{bar}= {ybar:{dmt}}")
+  print(f"Explained Variance       {Sigma}(Y{hat}-Y{bar}){squared} = {ssr:{dmt}}")
+  print(f"Unexplained Variance      {Sigma}(Y-Y{hat}){squared} = {sse:{dmt}}")
+  print(f"Total Variance            {Sigma}(Y-Y{bar}){squared} = {tvar:{dmt}}")
+  print(f"Total Sum of Squares  SSR+SSE=SSTO = {ssto:{dmt}}")
+  print(f"Coefficient of Determination    R{squared} = {r2:{dmt}}")
+  print(f"Sqrt(R{squared}) = {r2 ** 0.5:.{sig}f}")
+  print(f"     R   = {r:.{sig}f}")
+  PopCorrTTest(r, df + 1, 0, 0.10, sig)
 
 def CorrelationCoefficient(x:np.ndarray, y:np.ndarray, verbose:int = 0) -> float:
   """ Section 5.3.1 Correlation and coefficient of determination
@@ -198,7 +233,7 @@ def ConfidenceInterval(c:float, sampleMean:float, std:float, n:int, pop:bool, p:
 #==================================================================================================
 
 def Section5():
-  section = "Example 5.5.2: Finding a confidence interval for the slope"
+  section = "Python-Practice 5.5.1: Using ANOVA to test the correlation between two variables"
 
   if section == "":
     from Calculus import CalcTest
@@ -207,8 +242,14 @@ def Section5():
   elif section == "":
     print(f"{0:.3f}")
 
-  elif section == "":
-    print(f"{0:.3f}")
+  elif section == "Python-Practice 5.5.1: Using ANOVA to test the correlation between two variables":
+    from statsmodels.formula.api import ols
+    import statsmodels.api as sm
+    scores = pd.read_csv("ExamScores.csv")
+    x, y = scores['Exam1'], scores['Exam4']
+    SimpleLinearRegression(x, y)
+    mod = ols('Exam4 ~ Exam1',scores).fit()
+    print(sm.stats.anova_lm(mod, typ=2))
 
   elif section == "Example 5.5.2: Finding a confidence interval for the slope":
     c = 0.99
@@ -224,7 +265,6 @@ def Section5():
     #b0, b1 = 62.3017, 0.1788
     b0, b1 = 57.7627, 0.2266
     SimpleLinearRegression(x, y, b0, b1)
-
 
   elif section == "PA5.5.2: Testing a simple linear regression slope":
     b1, seb1 = 0.1788, 0.077
