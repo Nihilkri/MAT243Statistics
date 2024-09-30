@@ -50,12 +50,15 @@ def SimpleLinearRegression(x:np.ndarray, y:np.ndarray, b0:float, b1:float):
     print(f"   Squared Error {epsilon}{squared}")
     print(df)
 
+  meany = y.mean()
+  evar, tvar = np.sum((ey - meany) ** 2), np.sum((y - meany) ** 2)
+  r2 = evar / tvar
   print(f"Sum of Absolute Residuals {Sigma}|{epsilon}| = {sar:7,}")
   print(f"Sum of Squared Errors {Sigma}{epsilon}{squared} = {sse:7,}")
   print(f"Mean of regression errors = {ep.mean()}")
-  meany = y.mean()
   print(f"Mean of sample values = {meany}")
-  r2 = np.sum((ey - meany) ** 2) / np.sum((y - meany) ** 2)
+  print("Explained Variance =", evar)
+  print("Total Variance =", tvar)
   print(f"Coefficient of determination R{squared} = {r2}")
   print(f"Sqrt(R{squared}) = {r2 ** 0.5}")
   print(f"     R   =", CorrelationCoefficient(x, y, 0))
@@ -124,7 +127,7 @@ def CoefficientOfDetermination(x:np.ndarray, y:np.ndarray, verbose:int = 0) -> f
 #==================================================================================================
 
 def Section5():
-  section = "Example 5.3.2: Using the t-test for population correlation coefficient"
+  section = "Timeit"
 
   if section == "":
     from Calculus import CalcTest
@@ -136,16 +139,39 @@ def Section5():
   elif section == "":
     print(f"{0:.3f}")
 
-  elif section == "":
-    print(f"{0:.3f}")
+  elif section == "Timeit":
+    from timeit import timeit
+    ft = timeit('print(f"{nums[0]}, {nums[1]}, {nums[2]}, {nums[3]}, {nums[4]}, '
+           '{nums[5]}, {nums[6]}, {nums[7]}, {nums[8]}, {nums[9]}")', 
+           'nums = [x for x in range(10)]')
+    pt = timeit('print(nums[0], ",", nums[1], ",", nums[2], ",", nums[3], ",", nums[4],'
+           '",", nums[5], ",", nums[6], ",", nums[7], ",", nums[8], ",", nums[9])', 
+           'nums = [x for x in range(10)]')
+    print()
+    print(ft)
+    print(pt)
 
-  elif section == "":
-    print(f"{0:.3f}")
+  elif section == "Python-Practice 5.3.1: Coefficient of determination":
+    from statsmodels.formula.api import ols
+    import statsmodels.api as sm
+    # The ExamScores dataset is loaded
+    scores = pd.read_csv("ExamScores.csv")
+    # Creates a linear regression model
+    results = ols('Exam4 ~ Exam1', data=scores).fit()
+    # Prints the results
+    print(results.summary())
+    # Creates an analysis of variance table
+    aov_table = sm.stats.anova_lm(results, typ=2)
+    # Prints the analysis of variance table
+    print(aov_table)
+    x = scores['Exam1']
+    y = scores['Exam4']
+    b0, b1 = 57.7627, 0.2266
+    SimpleLinearRegression(x, y, b0, b1)
 
   elif section == "Python-Function 5.3.1: scipy.stats.pearsonr(x,y)":
     scores = pd.read_csv("ExamScores.csv")
-    x = scores['Exam1']
-    y = scores['Exam4']
+    x, y = scores['Exam1'], scores['Exam4']
     print(st.pearsonr(x, y))
 
   elif section == "Example 5.3.2: Using the t-test for population correlation coefficient":
