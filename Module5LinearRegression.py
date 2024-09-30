@@ -149,6 +149,7 @@ def SimpleLinearRegression(x:np.ndarray, y:np.ndarray, b0:float=None, b1:float=N
   print(f"Total Variance            {Sigma}(Y-Y{bar}){squared} = {tvar:{dmt}}")
   print(f"Total Sum of Squares  SSR+SSE=SSTO = {ssto:{dmt}}")
   print(f"Coefficient of Determination    R{squared} = {r2:{dmt}}")
+  print(f"{r2*100: .1f}% of variation in Y is accounted for by X")
   print(f"Sqrt(R{squared}) = {r2 ** 0.5:.{sig}f}")
   print(f"     R   = {r:.{sig}f}")
   PopCorrTTest(r, df + 1, 0, 0.10, sig)
@@ -233,7 +234,7 @@ def ConfidenceInterval(c:float, sampleMean:float, std:float, n:int, pop:bool, p:
 #==================================================================================================
 
 def Section5():
-  section = "Python-Practice 5.5.1: Using ANOVA to test the correlation between two variables"
+  section = "Module 5 Discussion"
 
   if section == "":
     from Calculus import CalcTest
@@ -241,6 +242,24 @@ def Section5():
 
   elif section == "":
     print(f"{0:.3f}")
+
+  elif section == "Module 5 Discussion":
+    csv = ("C:\\Users\\Nihil\\OneDrive - SNHU\\24EZ1 MAT-243 Applied Statistics 1 for STEM"
+           "\\5-3 Discussion Simple Linear Regression\\Module 5 Discussion.csv")
+    df = pd.read_csv(csv)
+    x, y = df['wt'], df['mpg']
+    SimpleLinearRegression(x, y)
+    import matplotlib.pyplot as plt
+    plt.plot(x, y, 'o', color='red')
+    plt.title('MPG against Weight')
+    plt.xlabel('Weight (1000s lbs)')
+    plt.ylabel('MPG')
+    plt.show()
+
+  elif section == "PA5.5.9: Finding and Interpreting the coefficient of determination":
+    df = pd.read_csv("http://data-analytics.zybooks.com/gpa.csv")
+    x, y = df['height'], df['gpa']
+    SimpleLinearRegression(x, y)
 
   elif section == "Python-Practice 5.5.1: Using ANOVA to test the correlation between two variables":
     from statsmodels.formula.api import ols
