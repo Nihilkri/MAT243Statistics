@@ -1,12 +1,12 @@
-print("Loading ", end="")
+print("Loading imports")
 import math
-print("Math, ", end="")
+print("Math loaded")
 import numpy as np
-print("Numpy, ", end="")
+print("Numpy loaded")
 import scipy.stats as st
-print("Scipy, ", end="")
+print("Scipy loaded")
 import pandas as pd
-print("Pandas, ", end="")
+print("Pandas loaded")
 # import matplotlib.pyplot as plt
 # #print("Pyplot loaded")
 # import sklearn as sks
@@ -17,11 +17,22 @@ print("Pandas, ", end="")
 # print("Imports loaded!\n")
 
 
-squared = chr(0x00B2)
-epsilon = chr(0x3B5)
-theta = chr(0x03B8)
-sigma = chr(0x3C3)
-Sigma = chr(0x3A3)
+# Greek Letters
+beta    = "\u03B2"
+epsilon = "\u03B5"
+theta   = "\u03B8"
+sigma   = "\u03C3"
+Sigma   = "\u03A3"
+# Superscripts
+squared = "\u00B2"
+# Subscripts
+subi    = "\u1D62"
+sub0    = "\u2080"
+# Diacritics
+hat     = "\u0302"
+bar     = "\u0304"
+# Control / Special
+frac    = "\u2044"
 
 def abandc(abc:list, noand:bool = False) -> str:
   """ Converts [A, B, C] into 'A, B, and C' """

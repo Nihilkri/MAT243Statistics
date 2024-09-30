@@ -28,40 +28,94 @@ def SimpleLinearRegression(x:np.ndarray, y:np.ndarray, b0:float, b1:float):
         line follows the pattern of the data. The farther the actual data points are from the
         regression line, the less useful the line actually is in predicting the value of the
         response variable.
+      
+      Section 5.4.2 Interpreting residual standard error
+        A number of quantities use the residuals, epsilon_i = Y_i - Yhat_i:
+          * The residual sum of squares is the sum of squared residuals for the sample,
+          SSE = sum(Y_i - Yhat_i)^2. The residual sum of squares is typically denoted SSE because
+          the residuals are estimated errors. The notation SSR is used for regression sum of
+          squares, which is defined in a later section.
+          * The residual degrees of freedom is n - p, where p is the number of regression
+          parameters. Ex: Simple linear regression has p = 2 regression parameters, so the residual
+          degrees of freedom is n - 2. Residual degrees of freedom is often called error degrees of
+          freedom.
+          * The residual mean square is the residual sum of squares divided by the residual degrees
+          of freedom, MSE = SSE / (n - p). Ex: For simple linear regression, MSE = SSE / (n - 2).
+          * The residual standard error is the square root of the residual mean square, s = sqrt(MSE).
+          The residual standard error, s, estimates the standard deviation of the residuals. The
+          measurement unit of the residual standard error is the same as the measurement unit of
+          the response Y variable.
+        The residual sum of squares, residual degrees of freedom, and residual mean square are used
+        in an Analysis of Variance table, which is often abbreviated as "ANOVA table." A later
+        section shows how an ANOVA table is used in model assessment.
+        The residual standard error is a measure of the precision of a model prediction. The sample
+        simple linear regression line can be used to predict a future value of Y for a fixed value
+        of X. A relatively small residual standard error indicates that the actual future value of
+        Y is likely to be relatively close to the predicted value. Therefore, less residual
+        standard error is better.
   """
-  lx, ly = len(x), len(y)
-  if lx != ly:
+  n, ly = len(x), len(y)
+  if n != ly:
     print("X Y mismatched!")
     return None
-  ey = b0 + b1 * x  # E(Y) Simple Linear Regression Function
-  ep = y - ey  # Y - E(Y) Regression Error
-  ar = np.abs(ep)  # Absolute Residuals
-  se = ep ** 2  # Squared Error
-  sar = sum(ar)  # Sum of the Absolute Residuals
-  sse = sum(se)  # Sum of the Squared Errors
-  if lx <= 10:
-    epH = "   " + epsilon
-    arH = " |" + epsilon + "|"
-    seH = "  " + epsilon + squared
-    dat = {'   X':x, '   Y':y, 'E(Y)':ey, epH:ep, arH:ar, seH:se}
-    df = pd.DataFrame(dat)
-    print(f"   Expected Value E(Y)")
-    print(f"   Regression Error {epsilon}")
+  ybar = y.mean()     # Mean of the data's response variables
+  yhat = b0 + b1 * x  # E(Y) for pop, Yhat for sample, Simple Linear Regression Function
+  ep = y - yhat       # Y - E(Y), Regression Error
+  ar = np.abs(ep)     # Absolute Residual
+  se = ep ** 2        # Squared Error
+  if n <= 10:
+    yhH = f"  Y{hat}"
+    print(f"   Expected Value E(Y) = Y{hat}")
+    epH = f"   {epsilon}"
+    print(f"   Regression Error {epsilon} = Y - Y{hat}")
+    arH = f"|{epsilon}|"
+    print(f"   Absolute Regression Error |{epsilon}|")
+    seH = f" {epsilon}{squared}"
     print(f"   Squared Error {epsilon}{squared}")
-    print(df)
+    dat = pd.DataFrame({'  X':x, '  Y':y, yhH:yhat, epH:ep, arH:ar, seH:se})
+    print(dat)
 
-  meany = y.mean()
-  evar, tvar = np.sum((ey - meany) ** 2), np.sum((y - meany) ** 2)
-  r2 = evar / tvar
-  print(f"Sum of Absolute Residuals {Sigma}|{epsilon}| = {sar:7,}")
-  print(f"Sum of Squared Errors {Sigma}{epsilon}{squared} = {sse:7,}")
-  print(f"Mean of regression errors = {ep.mean()}")
-  print(f"Mean of sample values = {meany}")
-  print("Explained Variance =", evar)
-  print("Total Variance =", tvar)
-  print(f"Coefficient of determination R{squared} = {r2}")
-  print(f"Sqrt(R{squared}) = {r2 ** 0.5}")
-  print(f"     R   =", CorrelationCoefficient(x, y, 0))
+  # Creating ANOVA Table
+  p = 2                             # The number of parameters, for SLR this is 2 (beta_0 and beta_1)
+  sar = np.sum(ar)                  # Sum of the Absolute Residuals
+  sse = np.sum(se)                  # Residual Sum of Squares (Sum of the Squared Errors, Unxplained Variance)
+  resdf = n - p                     # Residial Degrees of Freedom
+  mse = sse / resdf                 # Residual Mean Square (Mean Square Error)
+  s = mse ** 0.5                    # Residual Standard Error
+  epbar = ep.mean()                 # Mean of Regression Errors
+  ssr = np.sum((yhat - ybar) ** 2)  # Regression Sum of Squares (Explained Variance)
+  tvar = np.sum((y - ybar) ** 2)    # Total Variance
+  regdf = p - 1                     # Regression Degrees of Freedom
+  msr = ssr / regdf                 # Regression Mean Square, for SLR (MSR=SSR)
+  ssto = ssr + sse                  # Total Sum of Squares
+  df = regdf + resdf                # Total Degrees of Freedom = n - 1
+  r2 = ssr / tvar                   # Coefficient of Determination R^2
+  f = msr / mse                     # ANOVA F-statistic
+  print(f"ANOVA Table:                       = ")
+  print(f"Number of Samples                n = {n:11,}")
+  print(f"Parameters                       p = {p:11,}")
+  print(f"Sum of Absolute Residuals     {Sigma}|{epsilon}| = {sar:11,.3f}")
+
+  print(f"Residual Sum of Squares        {Sigma}{epsilon}{squared} = {sse:11,.3f}")
+  print(f"Residual Degrees of Freedom    n-p = {resdf:11,}")
+  print(f"Residual Mean Square           MSE = {mse:11,.3f}")
+  print(f"Regression Sum of Squares      SSR = {ssr:11,.3f}")
+  print(f"Regression Degrees of Freedom  p-1 = {regdf:11,}")
+  print(f"Regression Mean Square         MSR = {msr:11,.3f}")
+  print(f"Total Degrees of Freedom       n-1 = {df:11,}")
+  print(f"ANOVA F-statistic                F = {f:11,.3f}")
+
+
+  print(f"Residual Standard Error          s = {s:11,.3f}")
+  print(f"Mean of Regression Errors        {epsilon}{bar}= {epbar:11,.3f}")
+  print(f"Mean of Sample Values            Y{bar}= {ybar:11,.3f}")
+  print(f"Explained Variance       {Sigma}(Y{hat}-Y{bar}){squared} = {ssr:11,.3f}")
+  print(f"Unexplained Variance      {Sigma}(Y-Y{hat}){squared} = {sse:11,.3f}")
+  print(f"Total Variance            {Sigma}(Y-Y{bar}){squared} = {tvar:11,.3f}")
+  print(f"Total Sum of Squares  SSR+SSE=SSTO = {ssto:11,.3f}")
+  print(f"Coefficient of Determination    R{squared} = {r2:11,.3f}")
+  print(f"Sqrt(R{squared}) = {r2 ** 0.5:.3f}")
+  print(f"     R   = {CorrelationCoefficient(x, y, 0):.3f}")
 
 
 def CorrelationCoefficient(x:np.ndarray, y:np.ndarray, verbose:int = 0) -> float:
@@ -94,7 +148,7 @@ def CorrelationCoefficient(x:np.ndarray, y:np.ndarray, verbose:int = 0) -> float
     df = pd.DataFrame(dat)
     df.loc[Sigma] = pd.Series(sums)
     print(df.head(verbose))
-    print("r =", r)
+    print(f"{r =}")
     ar = abs(r)
     print("No" if ar < 0.001 else ((
           "Perfect" if ar > 0.999 else
@@ -115,10 +169,27 @@ def PopCorrTTest(r:float, n:int, tail:int, a:float, sig:int=3):
   t = r * df ** 0.5 / (1 - r ** 2) ** 0.5
   TTest(t, df, tail, a, sig)
 
-def CoefficientOfDetermination(x:np.ndarray, y:np.ndarray, verbose:int = 0) -> float:
-  """ 
+def ConfidenceInterval(c:float, sampleMean:float, std:float, n:int, pop:bool, p:int = 1):
+  """ Section 5.5.4: Confidence intervals for regression parameters
+      The slope estimator, b_1, provides a single number to estimate beta_1. To quantify sampling
+      uncertainty about a single number used to estimate beta_1, one can calculate an interval
+      around the number. A confidence interval for the slope is an interval around b_1 that
+      quantifies sampling uncertainty when b_1 is used to estimate beta_1. The confidence interval
+      is given by [b_1 - t*(SE), b_1 + t*(SE)] where SE is the standard error, and t* depends on
+      the degrees of freedom and the confidence level of interest, and can be found from a
+      t-distribution table. Although far less common, the confidence interval for the intercept
+      can also be calculated.
   """
-  mean = y.mean()
+  from Module3ConfidenceIntervals import Tstar
+  sampleStd = std
+  print(f"{sampleStd = }")
+  criticalValue = Tstar(c, n - p)
+  print(f"{criticalValue = }")
+  standardError = std# / (n ** 0.5)
+  print(f"{standardError = }")
+  m = criticalValue * standardError
+  print(f"{m = }")
+  return (sampleMean - m, sampleMean + m)
 
 
 
@@ -127,7 +198,7 @@ def CoefficientOfDetermination(x:np.ndarray, y:np.ndarray, verbose:int = 0) -> f
 #==================================================================================================
 
 def Section5():
-  section = "Timeit"
+  section = "Example 5.5.2: Finding a confidence interval for the slope"
 
   if section == "":
     from Calculus import CalcTest
@@ -139,13 +210,55 @@ def Section5():
   elif section == "":
     print(f"{0:.3f}")
 
+  elif section == "Example 5.5.2: Finding a confidence interval for the slope":
+    c = 0.99
+    n = 50
+    p = 2
+    sampleMean = 0.1788
+    std = 0.077
+    ci = ConfidenceInterval(c, sampleMean, std, n, False, p)
+    print(f"{FormatCI(ci)}")
+    print()
+    scores = pd.read_csv("ExamScores.csv")
+    x, y = scores['Exam1'], scores['Exam4']
+    #b0, b1 = 62.3017, 0.1788
+    b0, b1 = 57.7627, 0.2266
+    SimpleLinearRegression(x, y, b0, b1)
+
+
+  elif section == "PA5.5.2: Testing a simple linear regression slope":
+    b1, seb1 = 0.1788, 0.077
+    t = b1 / seb1
+    df = 12 - 1
+    TTest(t, df, 0, 0.05, 3)
+
+  elif section == "Python-Function 5.5.1: ols(), fit(), and summary()":
+    import statsmodels.formula.api as smf
+    scores = pd.read_csv("ExamScores.csv")
+    model = smf.ols('Exam4 ~ Exam2', scores).fit()
+    print(model.summary())
+    b1, seb1 = 0.1788, 0.077
+    t = b1 / seb1
+    df = len(scores['Exam4']) - 1
+    TTest(t, df, 0, 0.05, 3)
+
+  elif section == "PA5.4.3: Interpreting the residual standard error":
+    print(f"{beta}{squared}{sub0}{epsilon}{hat}{subi}{theta}{bar} 12{frac}34")
+    print(f"{Sigma}Y{bar} = Y{hat}{subi}{squared}")
+
+    x = [ 0, 1,  3,  6,  6,  8]
+    y = [6, 12, 18, 33, 42, 57]
+    b0, b1 = 4, 6
+    x, y = np.array(x), np.array(y)
+    SimpleLinearRegression(x, y, b0, b1)
+
   elif section == "Timeit":
     from timeit import timeit
-    ft = timeit('print(f"{nums[0]}, {nums[1]}, {nums[2]}, {nums[3]}, {nums[4]}, '
-           '{nums[5]}, {nums[6]}, {nums[7]}, {nums[8]}, {nums[9]}")', 
+    ft = timeit('print(f"{nums[0]}, {nums[1]}")',#, {nums[2]}, {nums[3]}, {nums[4]}, '
+           #'{nums[5]}, {nums[6]}, {nums[7]}, {nums[8]}, {nums[9]}")', 
            'nums = [x for x in range(10)]')
-    pt = timeit('print(nums[0], ",", nums[1], ",", nums[2], ",", nums[3], ",", nums[4],'
-           '",", nums[5], ",", nums[6], ",", nums[7], ",", nums[8], ",", nums[9])', 
+    pt = timeit('print(nums[0], ",", nums[1])',#, ",", nums[2], ",", nums[3], ",", nums[4],'
+           #'",", nums[5], ",", nums[6], ",", nums[7], ",", nums[8], ",", nums[9])', 
            'nums = [x for x in range(10)]')
     print()
     print(ft)
@@ -202,16 +315,18 @@ def Section5():
   elif section == "SLR PA5.1.9: Calculating sum of squared errors for a regression line":
     x, y = [0, 3, 7, 10], [5, 5, 27, 31]
     b0, b1 = 2, 3
+    x, y = np.array(x), np.array(y)
+    SimpleLinearRegression(x, y, b0, b1)
 
   elif section == "SLR Example 5.1.1: Computing the sum of squared errors":
     x, y = [[0, 3, 7, 10], [5, 5, 27, 31]]
     b0, b1 = 7, 2
+    x, y = np.array(x), np.array(y)
+    SimpleLinearRegression(x, y, b0, b1)
 
   elif section == "SLR PA5.1.6: Making predictions":
     x, y = [2000, 2200], [271000, 275000]
     b0, b1 = 190000, 40
-
-  if section[:3] == "SLR":
     x, y = np.array(x), np.array(y)
     SimpleLinearRegression(x, y, b0, b1)
 

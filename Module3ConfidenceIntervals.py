@@ -30,7 +30,7 @@ def Tstar(c:float, df:int) -> float:
     print(f"Confidence level {c} not defined")
   return 0
 
-def MarginOfError(c:float, std:float, n:int, pop:bool) -> float:
+def MarginOfError(c:float, std:float, n:int, pop:bool, p:int = 1) -> float:
   """ Section 3.1: Confidence intervals
       A margin of error, denoted by m, is the range of values above and below the point estimate.
       Numerically, m = (critical value)(standard error) where the critical value, which depends
@@ -40,17 +40,21 @@ def MarginOfError(c:float, std:float, n:int, pop:bool) -> float:
   if pop:
     # Section 3.1: Confidence intervals
     popStd = std
+    print(f"{popStd = }")
     criticalValue = Zstar(c)
-    standardError = popStd / (n ** 0.5)
-    return criticalValue * standardError
   else:
     # Section 3.2.3: t confidence intervals
     sampleStd = std
-    criticalValue = Tstar(c, n - 1)
-    standardError = sampleStd / (n ** 0.5)
-    return criticalValue * standardError
+    print(f"{sampleStd = }")
+    criticalValue = Tstar(c, n - p)
+  print(f"{criticalValue = }")
+  standardError = std / (n ** 0.5)
+  print(f"{standardError = }")
+  moe = criticalValue * standardError
+  print(f"{moe = }")
+  return moe
 
-def ConfidenceInterval(c:float, sampleMean:float, std:float, n:int, pop:bool):
+def ConfidenceInterval(c:float, sampleMean:float, std:float, n:int, pop:bool, p:int = 1):
   """ Section 3.1: Confidence intervals
       Two types of estimates exist: point estimates and interval estimates. A point estimate is a
       single value estimate for a parameter. An interval estimate is a range of values that is
@@ -62,7 +66,7 @@ def ConfidenceInterval(c:float, sampleMean:float, std:float, n:int, pop:bool):
   if std == 0.0:
     # Proportion, not a distribution
     std = (sampleMean * (1 - sampleMean)) ** 0.5
-  m = MarginOfError(c, std, n, pop)
+  m = MarginOfError(c, std, n, pop, p)
   return (sampleMean - m, sampleMean + m)
 
 def GuaranteedSampleSize(c:float, std:float, marginOfError:float, pop:bool, p:float = None) -> int:
