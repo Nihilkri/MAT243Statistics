@@ -159,7 +159,7 @@ def stats(dat:list):
     print("No modes, all unique values")
   else:
     modes = sorted([i[0] for i in itm if i[1] == modecount])
-    print(f"Mode{("s" if len(modes) > 1 else "")}: {abandc(modes)}, with count {modecount}")
+    print(f"Mode{('s' if len(modes) > 1 else '')}: {abandc(modes)}, with count {modecount}")
 
   sumsqd = sum([(x - mean) ** 2 for x in dat])
   print("Sum of the square differences:", sumsqd)
