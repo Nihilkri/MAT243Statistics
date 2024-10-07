@@ -235,14 +235,16 @@ def ConfidenceInterval(c:float, sampleMean:float, std:float, n:int, pop:bool, p:
 #==================================================================================================
 
 def Section5():
-  section = "Module 5 Discussion"
+  section = "Project Two"
 
   if section == "":
     from Calculus import CalcTest
     CalcTest()
 
-  elif section == "":
-    print(f"{0:.3f}")
+  elif section == "Project Two":
+    csv = ("C:\\Users\\Nihil\\OneDrive - SNHU\\24EZ1 MAT-243 Applied Statistics 1 for STEM"
+           "\\5-5 Project Two Submission\\nbaallelo.csv")
+    nba_orig_df = pd.read_csv(csv)
 
   elif section == "Module 5 Discussion":
     csv = ("C:\\Users\\Nihil\\OneDrive - SNHU\\24EZ1 MAT-243 Applied Statistics 1 for STEM"

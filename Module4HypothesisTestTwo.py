@@ -17,14 +17,28 @@ def ZTest2(sampleMean1:float, sampleMean2:float, popStd1:float, popStd2:float, n
   
 def PairedTTest(sampleMeanDifference:float, hypMeanDifference:float, sampleStd:float, n:int, tail:int, a:float, sig:int=3):
   """ Section 4.1.2 Two-sample t-test
-       In a paired t-test or dependent t-test, a sample taken from one population is exposed to two different treatments. The main idea is that measurements are recorded from the same group, usually before and after a treatment is applied or when each of two treatments is applied. Ex: A group of professional cycling athletes is selected for a study on the effects of caffeine dosage on exhaustion times. The populations are the cyclists for each of two dosages. The samples are the measured exhaustion times for each dosage, which implies dependence because the measurements were taken from the same group.
+      In a paired t-test or dependent t-test, a sample taken from one population is exposed to two
+      different treatments. The main idea is that measurements are recorded from the same group,
+      usually before and after a treatment is applied or when each of two treatments is applied.
+      Ex: A group of professional cycling athletes is selected for a study on the effects of
+      caffeine dosage on exhaustion times. The populations are the cyclists for each of two
+      dosages. The samples are the measured exhaustion times for each dosage, which implies
+      dependence because the measurements were taken from the same group.
   """
   t = round((sampleMeanDifference - hypMeanDifference) / (sampleStd / n ** 0.5), sig)
   TTest(t, n - 1, tail, a, sig)
   
 def UnpairedTTest(sampleMean1:float, sampleMean2:float, hypSampleMean1:float, hypSampleMean2:float, sampleStd1:float, sampleStd2:float, n1:int, n2:int, tail:int, a:float, sig:int=3):
   """ Section 4.1.2 Two-sample t-test
-       In an unpaired t-test or independent t-test, a sample taken from one population is not related to a different sample taken from another population. In contrast to the paired t-test, measurements from an unpaired t-test are recorded from different groups when exposed to the same treatment. Ex: The effect of caffeine intake on exhaustion times is studied by measuring the exhaustion times of a randomly selected group of 9 professional cyclists taking caffeine pills and another group of 9 cyclists not taking caffeine pills. The two populations are all cyclists taking caffeine pills and those who are not taking the pills. The samples are the measured exhaustion times from the two groups, each with 9 cyclists, which implies independence because the times are for two different groups of cyclists.
+      In an unpaired t-test or independent t-test, a sample taken from one population is not
+      related to a different sample taken from another population. In contrast to the paired
+      t-test, measurements from an unpaired t-test are recorded from different groups when exposed
+      to the same treatment. Ex: The effect of caffeine intake on exhaustion times is studied by
+      measuring the exhaustion times of a randomly selected group of 9 professional cyclists taking
+      caffeine pills and another group of 9 cyclists not taking caffeine pills. The two populations
+      are all cyclists taking caffeine pills and those who are not taking the pills. The samples
+      are the measured exhaustion times from the two groups, each with 9 cyclists, which implies
+      independence because the times are for two different groups of cyclists.
   """
   stderr = round((sampleStd1 ** 2 / n1 + sampleStd2 ** 2 / n2) ** 0.5, sig)
   print(f"{stderr = :.6f}")
