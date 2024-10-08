@@ -28,8 +28,8 @@ Sigma   = "\u03A3"
 squared = "\u00B2"
 # Subscripts
 subi    = "\u1D62"
-sub0    = "\u2080"
-sub1    = "\u2081"
+subn    = [chr(0x2080+i) for i in range(10)]
+#subnn   = ["\u208" + str(i) + "\u208" + str(j) for j in range(10) for i in range(10)]
 # Diacritics
 hat     = "\u0302"
 bar     = "\u0304"

@@ -130,8 +130,8 @@ def SimpleLinearRegression(x:np.ndarray, y:np.ndarray, b0:float=None, b1:float=N
   fmt = f"{intlen},"                # Format the integers into a string
   dmt = f"{declen},.{sig}f"         # Format the decimals into a string
   print(f"ANOVA Table:                       = ")
-  print(f"Y-Intercept of Regression Line  {beta}{sub0} = {b0:{dmt}}")
-  print(f"Slope of Regression Line        {beta}{sub1} = {b1:{dmt}}")
+  print(f"Y-Intercept of Regression Line  {beta}{subn[0]} = {b0:{dmt}}")
+  print(f"Slope of Regression Line        {beta}{subn[1]} = {b1:{dmt}}")
   print(f"Number of Samples                n = {n:{fmt}}")
   print(f"Parameters                       p = {p:{fmt}}")
   print(f"Sum of Absolute Residuals     {Sigma}|{epsilon}| = {sar:{dmt}}")
@@ -311,7 +311,7 @@ def Section5() -> None:
     TTest(t, df, 0, 0.05, 3)
 
   elif section == "PA5.4.3: Interpreting the residual standard error":
-    print(f"{beta}{squared}{sub0}{epsilon}{hat}{subi}{theta}{bar} 12{frac}34")
+    print(f"{beta}{squared}{subn[0]}{epsilon}{hat}{subi}{theta}{bar} 12{frac}34")
     print(f"{Sigma}Y{bar} = Y{hat}{subi}{squared}")
 
     x = [ 0, 1,  3,  6,  6,  8]
