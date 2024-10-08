@@ -266,7 +266,7 @@ def Section5() -> None:
     plt.show()
 
   elif section == "PA5.5.9: Finding and Interpreting the coefficient of determination":
-    df = pd.read_csv("http://data-analytics.zybooks.com/gpa.csv")
+    df = pd.read_csv("gpa.csv")
     x, y = df['height'], df['gpa']
     SimpleLinearRegression(x, y)
 

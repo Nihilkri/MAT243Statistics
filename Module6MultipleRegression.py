@@ -46,18 +46,20 @@ def MultipleLinearRegression(xs:pd.DataFrame, y:pd.DataFrame, b:np.ndarray=None,
       raise ValueError(f"X['{xs.columns[i]}'] with {x} entries is {
       'smaller' if x < n else 'larger'} than Y with {n} entries!")
   if b is None:
-    xs.insert(0, 'Intercept', 1)
+    xs.insert(0, '1', 1)
     xT = xs.T
     gram : np.ndarray = np.matmul(xT, xs)
     moment : np.ndarray = np.matmul(xT, y)
     grami : np.ndarray = np.linalg.inv(gram)
     b = np.matmul(grami, moment)
-    xs = xs[xs.columns[1:]]
+    #xs = xs[xs.columns[1:]]
+    print(b)
+  #print(xs)
+  yhat = sum([b[i] * xs[c] for i, c in enumerate(xs.columns)])
+  ep = y - yhat
 
-  print(b)
-  print("All clear!")
+  print(xs.join(pd.DataFrame({'y  ': y, f'y{hat} ': yhat, f'{epsilon}  ': ep})))
 
-  print(xs)
 
 #==================================================================================================
 
@@ -94,14 +96,21 @@ def Section6():
   elif section == "":
     print(f"{0:.3f}")
     
-  elif section == "":
-    print(f"{0:.3f}")
+  elif section == "Testing SLR vs MLR":
+    fat = pd.read_csv('fat.csv')
+    fat.columns = [c[:6] for c in fat.columns]
+    y = fat[fat.columns[1]]
+    xs = fat[fat.columns[2]] 
+    SimpleLinearRegression(xs, y)
+    xs = fat[fat.columns[2:3]] 
+    MultipleLinearRegression(xs, y, None)
+
     
   elif section == "MLR test":
     fat = pd.read_csv('fat.csv')
     fat.columns = [c[:6] for c in fat.columns]
     y = fat[fat.columns[1]]
-    xs = fat[fat.columns[2:]] 
+    xs = fat[fat.columns[2:5]] 
     MultipleLinearRegression(xs, y, None)
     
   elif section == "-sqrt vs -ln plot":
