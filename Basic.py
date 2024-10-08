@@ -4,11 +4,12 @@ print("Math loaded")
 import numpy as np
 print("Numpy loaded")
 import scipy.stats as st
-print("Scipy loaded")
+print("Scipy.stats loaded")
 import pandas as pd
 print("Pandas loaded")
-# import matplotlib.pyplot as plt
-# #print("Pyplot loaded")
+import matplotlib.pyplot as plt
+plt.style.use('dark_background')
+print("Pyplot loaded")
 # import sklearn as sks
 # #print("Scikit-learn loaded")
 # import seaborn as sns

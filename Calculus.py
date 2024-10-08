@@ -25,7 +25,6 @@ def Func(f, params, lx:float, rx:float, r:int = 1048577):
 
 def Plot(s, title:str, xlabel:str, ylabel:str, ly:float = None, ry:float = None):
   """ Plots a function F from lx to rx as resolution r """
-  plt.style.use('dark_background')
   fig, ax = plt.subplots()
   #ax.set_yticks(np.linspace(0, 1, 11))
   #ax.set_yticks(np.linspace(0, 1, 101), minor=True)

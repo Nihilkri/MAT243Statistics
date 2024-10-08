@@ -32,6 +32,9 @@
     <Compile Include="Module3ConfidenceIntervals.py" />
     <Compile Include="Module4HypothesisTestTwo.py" />
     <Compile Include="Module5LinearRegression.py" />
+    <Compile Include="Module6MultipleRegression.py" />
+    <Compile Include="Module7InterpretingMultipleRegression.py" />
+    <Compile Include="Module8OneWayANOVAAndChiSquareTests.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

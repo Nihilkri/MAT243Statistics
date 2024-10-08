@@ -1,14 +1,20 @@
 from Basic import *
 
-
-def FormatLinregress(inp):
+def FormatLinregress(inp:tuple) -> dict:
   slope, intercept, r, p, se = inp
   istderr = inp.intercept_stderr
   names = ['Slope', 'Intercept', 'R Value', 'P Value', 'Standard Error', 'Intercept Standard Error']
   values = [slope, intercept, r, p, se, istderr]
   return {'Names':names, 'Values':values}
 
-def SimpleLinearRegression(x:np.ndarray, y:np.ndarray, b0:float=None, b1:float=None, tail:int=0, a:float=0.05, sig:float=6):
+def ANOVATable() -> float:
+  """
+  """
+
+
+  pass
+
+def SimpleLinearRegression(x:np.ndarray, y:np.ndarray, b0:float=None, b1:float=None, tail:int=None, a:float=0.05, sig:float=6) -> None:
   """ Section 5.1.1 Regression Lines
         A simple linear regression is a way to model the linear relationship between two
         quantitative variables, using a line drawn through those variables' data points,
@@ -76,10 +82,9 @@ def SimpleLinearRegression(x:np.ndarray, y:np.ndarray, b0:float=None, b1:float=N
         Y will leave a lot of variation remaining in Y. Then SSE will be close to SSTO and R^2 will
         be low (close to 0%).
   """
-  n, ly = len(x), len(y)
-  if n != ly:
-    print("X Y mismatched!")
-    return None
+  n = len(y)
+  if n != len(x):
+      raise ValueError(f"X and Y are mismatched!")
   ybar = y.mean()     # Mean of the data's response variable
   xbar = x.mean()     # Mean of the data's predictor variable
   dx = x - xbar       # Deviation of x_i from the mean of x
@@ -153,7 +158,8 @@ def SimpleLinearRegression(x:np.ndarray, y:np.ndarray, b0:float=None, b1:float=N
   r = CorrelationCoefficient(x, y, n)
   print(f"Sqrt(R{squared}) = {r2 ** 0.5:.{sig}f}")
   print(f"     R   = {r:.{sig}f}")
-  PopCorrTTest(r, df + 1, 0, 0.10, sig)
+  if tail is not None:
+    PopCorrTTest(r, df + 1, tail, 0.10, sig)
 
 def CorrelationCoefficient(x:np.ndarray, y:np.ndarray, verbose:int = 0) -> float:
   """ Section 5.3.1 Correlation and coefficient of determination
@@ -195,7 +201,7 @@ def CorrelationCoefficient(x:np.ndarray, y:np.ndarray, verbose:int = 0) -> float
           " Negative")), "Correlation")
   return r
 
-def PopCorrTTest(r:float, n:int, tail:int, a:float, sig:int=3):
+def PopCorrTTest(r:float, n:int, tail:int, a:float, sig:int=3) -> None:
   """ Section 5.3.2 t-test for the population correlation coefficient
       The distribution of the Pearson correlation coefficients for samples of size n follows a
       t-distribution with n - 2 degrees of freedom. When determining whether a linear relationship
@@ -206,7 +212,7 @@ def PopCorrTTest(r:float, n:int, tail:int, a:float, sig:int=3):
   t = r * df ** 0.5 / (1 - r ** 2) ** 0.5
   TTest(t, df, tail, a, sig)
 
-def ConfidenceInterval(c:float, sampleMean:float, std:float, n:int, pop:bool, p:int = 1):
+def ConfidenceInterval(c:float, sampleMean:float, std:float, n:int, pop:bool, p:int = 1) -> tuple[float]:
   """ Section 5.5.4: Confidence intervals for regression parameters
       The slope estimator, b_1, provides a single number to estimate beta_1. To quantify sampling
       uncertainty about a single number used to estimate beta_1, one can calculate an interval
@@ -234,7 +240,7 @@ def ConfidenceInterval(c:float, sampleMean:float, std:float, n:int, pop:bool, p:
 
 #==================================================================================================
 
-def Section5():
+def Section5() -> None:
   section = "Project Two"
 
   if section == "":
