@@ -7,7 +7,25 @@ def PlotResiduals(xs:pd.DataFrame, y:pd.DataFrame, b:np.ndarray=None) -> None:
   pass
 
 def MultipleRegressionAssumptions(xs:pd.DataFrame, y:pd.DataFrame, b:np.ndarray=None) -> None:
-  """
+  """ Section 6.2.1 Assumptions of the multiple regression model
+        A multiple regression model is considered valid only if the following assumptions can be
+        made about the population. Since population regression errors are not observable, the
+        sample residuals e_i = Y_i - Yhat_i are used to determine whether each assumption is
+        violated.
+        Mean of zero: The mean of each residual for each set of values for the predictor variables
+        is zero. Equivalently, this assumption says that the response variable is a linear function
+        of each of the predictor variables.
+        Independence: The residuals are independent. This condition can be difficult to assess. A
+        common way to determine independence is by plotting residuals with respect to the time in
+        which the data is collected. If a trend exists, then the independence assumption is
+        potentially violated.
+        Normality: The residuals of each set of values for the predictor variables form a normal
+        distribution. If the plotted points lie reasonably close to the diagonal line on the plot
+        then one can conclude that the normality assumption holds.
+        Constant variance: The residuals of each set of values for the predictor variables should
+        have equal or similar variance. A common term for this condition is homoscedasticity. If
+        the variance does not remain constant throughout the plot, then the model exhibits
+        heteroscedasticity.
   """
   pass
 
@@ -93,6 +111,7 @@ def MultipleLinearRegression(xs:pd.DataFrame, y:pd.DataFrame, b:np.ndarray=None,
   ssto = ssr + sse                  # Total Sum of Squares
   df = regdf + resdf                # Total Degrees of Freedom = n - 1
   r2 = ssr / tvar                   # Coefficient of Determination R^2
+  r2adj = 1 - (1 - r2) * (n - 1) / (n - (lx + 1))
   f = msr / mse                     # ANOVA F-statistic
   maxlen = int(np.log10(ssto) + 1)  # To format, take the length of the longest value
   intlen = maxlen + maxlen // 3     # Make room for commas
@@ -125,6 +144,7 @@ def MultipleLinearRegression(xs:pd.DataFrame, y:pd.DataFrame, b:np.ndarray=None,
   print(f"Total Sum of Squares  SSR+SSE=SSTO = {ssto:{dmt}}")
   print(f"Coefficient of Determination    R{squared} = {r2:{dmt}}")
   print(f"{r2*100: .1f}% of variation in Y is accounted for by X")
+  print(f"Adj Coef. of Determination   R{squared}adj = {r2adj:{dmt}}")
 
 
 
@@ -132,95 +152,78 @@ def MultipleLinearRegression(xs:pd.DataFrame, y:pd.DataFrame, b:np.ndarray=None,
 
 def Section6():
   #global plt
-  section = "Python-Practice 6.2.1: Residual plots"
+  section = "MLR test"
 
   if section == "":
     print(f"{0:.3f}")
 
-  elif section == "":
-    print(f"{0:.3f}")
+    if section == "":
+      print(f"{0:.3f}")
+    
+    elif section == "":
+      print(f"{0:.3f}")
+    
+    elif section == "":
+      print(f"{0:.3f}")
+    
+    elif section == "":
+      print(f"{0:.3f}")
+    
+    elif section == "":
+      print(f"{0:.3f}")
+    
+    elif section == "":
+      print(f"{0:.3f}")
     
   elif section == "":
     print(f"{0:.3f}")
     
-  elif section == "":
-    print(f"{0:.3f}")
-    
-  elif section == "":
-    print(f"{0:.3f}")
-    
-  elif section == "":
-    print(f"{0:.3f}")
-    
-  elif section == "":
-    print(f"{0:.3f}")
-    
-  elif section == "":
-    print(f"{0:.3f}")
-    
-  elif section == "":
-    print(f"{0:.3f}")
-    
-  elif section == "Python-Practice 6.2.1: Residual plots":
+  elif section == "Python-Practice 6.2.2: qqplot()":
+    import statsmodels.graphics.gofplots as smg
     import statsmodels.formula.api as sms
-
     fat = pd.read_csv('fat.csv')
-
     # Response variable
     Y = fat['body_fat_percent']
-
     # Generates the linear regression model
     # Multiple predictor variables are joined with +
     model = sms.ols('Y ~ triceps_skinfold_thickness_mm + midarm_circumference_cm + thigh_circumference_cm', data = fat).fit()
-
-    plt.figure(figsize = (20, 16))
-    plt.tight_layout()
-
-    plt.subplot(2, 2, 1)
-    plt.scatter(x = fat['triceps_skinfold_thickness_mm'], y = model.resid, color = 'blue', edgecolor = 'k')
-    xmin = min(fat['triceps_skinfold_thickness_mm'])
-    xmax = max(fat['triceps_skinfold_thickness_mm'])
-    plt.hlines(y = 0, xmin = xmin, xmax = xmax, color = 'red', linestyle = '--')
-    plt.xlabel('$X_1$', fontsize = 16)
-    plt.ylabel('Residuals', fontsize = 16)
-    plt.xticks(fontsize = 12)
-    plt.yticks(fontsize = 12)
-    plt.title('$X_1$ vs. residuals', fontsize = 24)
-
-    plt.subplot(2, 2, 2)
-    plt.scatter(x = fat['midarm_circumference_cm'], y = model.resid, color = 'blue', edgecolor = 'k')
-    xmin = min(fat['midarm_circumference_cm'])
-    xmax = max(fat['midarm_circumference_cm'])
-    plt.hlines(y = 0, xmin = xmin, xmax = xmax, color = 'red', linestyle = '--')
-    plt.xlabel('$X_2$', fontsize = 16)
-    plt.ylabel('Residuals', fontsize = 16)
-    plt.xticks(fontsize = 12)
-    plt.yticks(fontsize = 12)
-    plt.title('$X_2$ vs. residuals', fontsize = 24)
-
-    plt.subplot(2, 2, 3)
-    plt.scatter(x = fat['thigh_circumference_cm'], y = model.resid, color = 'blue', edgecolor = 'k')
-    xmin = min(fat['thigh_circumference_cm'])
-    xmax = max(fat['thigh_circumference_cm'])
-    plt.hlines(y = 0, xmin = xmin, xmax = xmax, color = 'red', linestyle = '--')
-    plt.xlabel('$X_3$', fontsize = 16)
-    plt.ylabel('Residuals', fontsize = 16)
-    plt.xticks(fontsize = 12)
-    plt.yticks(fontsize = 12)
-    plt.title('$X_3$ vs. residuals', fontsize = 24)
-
-    plt.subplot(2, 2, 4)
-    plt.scatter(x = model.fittedvalues, y = model.resid, color = 'blue', edgecolor = 'k')
-    xmin = min(Y)
-    xmax = max(Y)
-    plt.hlines(y = 0, xmin = xmin, xmax = xmax, color = 'red', linestyle = '--')
-    plt.xlabel('Fitted values', fontsize = 16)
-    plt.ylabel('Residuals', fontsize = 16)
-    plt.xticks(fontsize = 12)
-    plt.yticks(fontsize = 12)
-    plt.title('Fitted values vs. residuals', fontsize = 24)
+    fig = smg.qqplot(model.resid, line = '45', fit = 'True')
+    plt.xlabel('Theoretical quantiles')
+    plt.ylabel('Sample quantiles')
+    plt.title('Q-Q plot of normalized residuals')
     plt.show()
 
+  elif section == "Python-Practice 6.2.1: Residual plots":
+    import statsmodels.formula.api as sms
+    fat = pd.read_csv('fat.csv')
+    # Response variable
+    Y = fat['body_fat_percent']
+    # Generates the linear regression model
+    # Multiple predictor variables are joined with +
+    model = sms.ols('Y ~ triceps_skinfold_thickness_mm + midarm_circumference_cm + thigh_circumference_cm', data = fat).fit()
+    plt.figure(figsize = (20, 16))
+    plt.tight_layout()
+    mx = len(fat.columns)
+    for i in range(1, mx):
+      if i == mx - 1:
+        name = 'Fitted values'
+        df = model.fittedvalues
+        xmin = min(Y)
+        xmax = max(Y)
+      else:
+        name = f'$X_{i}$'
+        df = fat[fat.columns[i + 1]]
+        xmin = min(df)
+        xmax = max(df)
+      plt.subplot(2, 2, i)
+      plt.scatter(x = df, y = model.resid, color = 'blue', edgecolor = 'k')
+      plt.hlines(y = 0, xmin = xmin, xmax = xmax, color = 'red', linestyle = '--')
+      plt.xlabel(name, fontsize = 16)
+      plt.ylabel('Residuals', fontsize = 16)
+      plt.xticks(fontsize = 12)
+      plt.yticks(fontsize = 12)
+      plt.title(f'{name} vs. residuals', fontsize = 24)
+    plt.show()
     
   elif section == "Testing SLR vs MLR":
     fat = pd.read_csv('fat.csv')
@@ -230,7 +233,6 @@ def Section6():
     SimpleLinearRegression(xs, y)
     xs = fat[fat.columns[2:3]] 
     MultipleLinearRegression(xs, y, None)
-
     
   elif section == "MLR test":
     fat = pd.read_csv('fat.csv')

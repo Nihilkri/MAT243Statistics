@@ -36,7 +36,7 @@ bar     = "\u0304"
 # Control / Special
 frac    = "\u2044"
 
-def abandc(abc:list, noand:bool = False) -> str:
+def abandc(abc:list[str], noand:bool = False) -> str:
   """ Converts [A, B, C] into 'A, B, and C' """
   n:int = len(abc)
   if(n == 0): return s
@@ -47,7 +47,7 @@ def abandc(abc:list, noand:bool = False) -> str:
   s += ("," if n > 2 else "") + (" " if noand else " and ") + str(abc[-1])
   return s
 
-def MeanStd(dat:list, sample:bool = True):
+def MeanStd(dat:list[float], sample:bool = True) -> tuple[int, float, float]:
   """ Calculates the mean and standard deviation of either the population or a sample.
       The mean is from section 1.12 and the standard deviation is from section 1.13.
   """
@@ -76,7 +76,7 @@ def TTest(t:float, df:int, tail:int, a:float, sig:int=3):
   print(f"{p = :.{sig}f}")
   print("Fails to reject null hypothesis" if p > a else "Rejects null hypothesis")
 
-def stats(dat:list):
+def stats(dat:list[float]):
   """ The list of statistics on a dataset, from sections 1.12 and 1.13 """
   print("Data:", dat)
 
@@ -175,5 +175,11 @@ def stats(dat:list):
   mad = sum([abs(x - mean) for x in dat]) / n
   print("Mean absolute deviation", mad)
 
-def FormatCI(ci:tuple) -> str:
+def FormatCI(ci:tuple[float]) -> str:
   return f"[{ci[0]:.3f}, {ci[1]:.3f}]"
+
+from typing import Generator
+import colorsys
+def colorWheel(n:int) -> Generator[None, str, None]:
+  """
+  """
