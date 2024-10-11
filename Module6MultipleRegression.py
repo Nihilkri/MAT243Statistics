@@ -55,7 +55,8 @@ def MultipleLinearRegression(xs:pd.DataFrame, y:pd.DataFrame, b:np.ndarray=None,
         value and b[1:n] are the estimates for B[0:n] that minimize the sum of squared errors. The
         "hat" notation in Yhat is a statistical convention that denotes a sample estimate.
 
-
+        Section 7.1 Interpreting multiple regression models
+          
   """
   #SimpleLinearRegression(xs[0], y, b[0], b[1], tail, a, sig)
   n = len(y)
@@ -99,20 +100,22 @@ def MultipleLinearRegression(xs:pd.DataFrame, y:pd.DataFrame, b:np.ndarray=None,
   # Creating ANOVA Table
   p = len(b)                        # The number of parameters, for SLR this is 2 (beta_0 and beta_1)
   sar = np.sum(ar)                  # Sum of the Absolute Residuals
+  epbar = ep.mean()                 # Mean of Regression Errors
+
   sse = np.sum(se)                  # Residual Sum of Squares (Sum of the Squared Errors, Unxplained Variance)
   resdf = n - p                     # Residial Degrees of Freedom
   mse = sse / resdf                 # Residual Mean Square (Mean Square Error)
-  s = mse ** 0.5                    # Residual Standard Error
-  epbar = ep.mean()                 # Mean of Regression Errors
   ssr = np.sum((yhat - ybar) ** 2)  # Regression Sum of Squares (Explained Variance)
-  tvar = np.sum((y - ybar) ** 2)    # Total Variance
   regdf = p - 1                     # Regression Degrees of Freedom
   msr = ssr / regdf                 # Regression Mean Square, for SLR (MSR=SSR)
-  ssto = ssr + sse                  # Total Sum of Squares
   df = regdf + resdf                # Total Degrees of Freedom = n - 1
-  r2 = ssr / tvar                   # Coefficient of Determination R^2
-  r2adj = 1 - (1 - r2) * (n - 1) / (n - (lx + 1))
   f = msr / mse                     # ANOVA F-statistic
+
+  rmse = mse ** 0.5                 # Residual Mean Square Error (Residual Standard Error)
+  ssto = np.sum((y - ybar) ** 2)    # Total Sum of Squares = Total Variance
+  tvar = ssr + sse                  # Total Variance = Total Sum of Squares
+  r2 = ssr / ssto                   # Coefficient of Determination R^2
+  r2adj = 1 - (1 - r2) * (n - 1) / (n - (lx + 1))
   maxlen = int(np.log10(ssto) + 1)  # To format, take the length of the longest value
   intlen = maxlen + maxlen // 3     # Make room for commas
   declen = int(intlen + 1 + sig)    # Make room for decimals
@@ -124,9 +127,11 @@ def MultipleLinearRegression(xs:pd.DataFrame, y:pd.DataFrame, b:np.ndarray=None,
     print(f"Slope of Regression Line {i}      {beta}{subn[i]} = {b[i]:{dmt}}")
   print(f"Number of Samples                n = {n:{fmt}}")
   print(f"Parameters                       p = {p:{fmt}}")
+  print(f"Mean of Sample Values            Y{bar}= {ybar:{dmt}}")
+  print(f"Mean of Regression Errors        {epsilon}{bar}= {epbar:{dmt}}")
   print(f"Sum of Absolute Residuals     {Sigma}|{epsilon}| = {sar:{dmt}}")
-
-  print(f"Residual Sum of Squares        {Sigma}{epsilon}{squared} = {sse:{dmt}}")
+  print()
+  print(f"Residual Sum of Squares  {Sigma}{epsilon}{squared} = SSE = {sse:{dmt}}")
   print(f"Residual Degrees of Freedom    n-p = {resdf:{fmt}}")
   print(f"Residual Mean Square           MSE = {mse:{dmt}}")
   print(f"Regression Sum of Squares      SSR = {ssr:{dmt}}")
@@ -134,10 +139,8 @@ def MultipleLinearRegression(xs:pd.DataFrame, y:pd.DataFrame, b:np.ndarray=None,
   print(f"Regression Mean Square         MSR = {msr:{dmt}}")
   print(f"Total Degrees of Freedom       n-1 = {df:{fmt}}")
   print(f"ANOVA F-statistic                F = {f:{dmt}}")
-
-  print(f"Residual Standard Error          s = {s:{dmt}}")
-  print(f"Mean of Regression Errors        {epsilon}{bar}= {epbar:{dmt}}")
-  print(f"Mean of Sample Values            Y{bar}= {ybar:{dmt}}")
+  print()
+  print(f"Residual Standard Error       RMSE = {rmse:{dmt}}")
   print(f"Explained Variance       {Sigma}(Y{hat}-Y{bar}){squared} = {ssr:{dmt}}")
   print(f"Unexplained Variance      {Sigma}(Y-Y{hat}){squared} = {sse:{dmt}}")
   print(f"Total Variance            {Sigma}(Y-Y{bar}){squared} = {tvar:{dmt}}")
@@ -172,11 +175,39 @@ def Section6():
     elif section == "":
       print(f"{0:.3f}")
     
-    elif section == "":
-      print(f"{0:.3f}")
-    
-  elif section == "":
+  elif section == "PA7.1.2: Interpreting residual standard error":
     print(f"{0:.3f}")
+    
+  elif section == "Python-Practice 7.1.1: Multiple regression models":
+    """ Consider the body fat dataset and a model where the response variable Y is percent body fat
+          and the predictor variables X_1 = triceps skinfold thickness (mm) and X_2 = midarm
+          circumference (cm). The model is constructed using the code below.
+
+        R-squared measures the proportion of total variation in Y that is accounted for by the
+          multiple regression model, which is 0.786. Adj. R-squared is an adjustment to R-squared
+          that allows alternative models for the same response variable to be compared. F-statistic
+          and Prob (F-statistic) tests whether no linear regression relationship exists between Y
+          and the the set {X1, X2}.
+
+        The coef column in the table below are the estimates for the parameters, which are
+          b0 = 6.7916, b1 = 1.0006, and b2 = -0.4314. Thus, the equation for the model is
+          Yhat = 6.7916 + 1.0006 X_1 - 0.4314 X_2. The std err column contains standard errors of
+          the regression parameter estimators, which measure the precision of the estimators. The
+          t column contains individual t-statistics for the regression parameter estimators, equal
+          to each estimate divided by its standard error. The next column contains individual
+          p-values for the regression parameter estimators, equal to the sum of the tail areas
+          beyond the t-statistic. The last two columns give the lower and upper bounds of the
+          95% confidence interval.
+    """
+    from statsmodels.formula.api import ols
+    fat = pd.read_csv('fat.csv')
+    Y = fat['body_fat_percent']
+    t1 = 'triceps_skinfold_thickness_mm'
+    t2 = 'midarm_circumference_cm'
+    X = fat[[t1, t2]]
+    m12 = ols(f'Y ~ {t1} + {t2}', data = fat).fit()
+    print(m12.summary())
+    MultipleLinearRegression(X, Y)
     
   elif section == "Python-Practice 6.2.2: qqplot()":
     import statsmodels.graphics.gofplots as smg
@@ -238,7 +269,7 @@ def Section6():
     fat = pd.read_csv('fat.csv')
     fat.columns = [c[:6] for c in fat.columns]
     y = fat[fat.columns[1]]
-    xs = fat[fat.columns[2:5]] 
+    xs = fat[fat.columns[2:5]]
     MultipleLinearRegression(xs, y, None)
     
   elif section == "-sqrt vs -ln plot":
