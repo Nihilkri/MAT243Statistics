@@ -155,7 +155,7 @@ def MultipleLinearRegression(xs:pd.DataFrame, y:pd.DataFrame, b:np.ndarray=None,
 
 def Section6():
   #global plt
-  section = "MLR test"
+  section = "Alexus's Lab 7"
 
   if section == "":
     print(f"{0:.3f}")
@@ -172,8 +172,16 @@ def Section6():
     elif section == "":
       print(f"{0:.3f}")
     
-    elif section == "":
-      print(f"{0:.3f}")
+  elif section == "Alexus's Lab 7":
+    dat = pd.Series([4, 6, 7, 2, 5, 4, 7, 9])
+    print(f"Step 1: H_0: {mu} = ~~~~~~~~~~~~~")
+    print(f"Step 2: H_a: {mu} {ne} ~~~~~~~~~~~~~")
+    from Module3ConfidenceIntervals import Zstar, HypTest
+    print(f"Step 3: Z* = {Zstar(0.90)}")
+    print(f"Step 4: {mu} = {dat.mean():.3f}")
+    print(f"Step 5: {sigma} = {dat.std():.3f}")
+    df = pd.DataFrame({}).s
+
     
   elif section == "PA7.1.2: Interpreting residual standard error":
     print(f"{0:.3f}")

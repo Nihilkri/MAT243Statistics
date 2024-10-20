@@ -22,6 +22,7 @@ print("Pyplot loaded")
 beta    = "\u03B2"
 epsilon = "\u03B5"
 theta   = "\u03B8"
+mu      = "\u03BC"
 sigma   = "\u03C3"
 Sigma   = "\u03A3"
 # Superscripts
@@ -35,6 +36,7 @@ hat     = "\u0302"
 bar     = "\u0304"
 # Control / Special
 frac    = "\u2044"
+ne      = "\u2260"
 
 def abandc(abc:list[str], noand:bool = False) -> str:
   """ Converts [A, B, C] into 'A, B, and C' """
