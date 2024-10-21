@@ -84,7 +84,7 @@ def Chi2Test(dat:pd.DataFrame) -> None:
 #==================================================================================================
 
 def Section8():
-  section = "PA8.2.2: Calculating expected cell counts"
+  section = "Python-Practice 8.2.2: Chi-squared test of independence"
 
   if section == "":
     print(f"{0:.3f}")
@@ -95,8 +95,16 @@ def Section8():
   elif section == "":
     print(f"{0:.3f}")
     
-  elif section == "":
-    print(f"{0:.3f}")
+  elif section == "Python-Practice 8.2.2: Chi-squared test of independence":
+    from scipy.stats import chi2_contingency
+    # Construct a contingency table
+    parole = np.array([[405,1422], [240,470], [151,275]])
+    # Calculate the test statistic, $p$-value, degrees of freedom, and expected counts
+    chi2, p, df, ex = chi2_contingency(parole)
+    print(f"{chi2 = }")
+    print(f"{p = }")
+    print(f"{df = }")
+    print(f"{ex = }")
     
   elif section == "PA8.2.2: Calculating expected cell counts":
     from io import StringIO
