@@ -1,7 +1,7 @@
-from Module6MultipleRegression import *
+from Module8OneWayANOVAAndChiSquareTests import *
 
 if(__name__ == "__main__"):
   print("Imports done!\n")
-  Section6()
+  Section8()
   print("\nGoodbye!")
   

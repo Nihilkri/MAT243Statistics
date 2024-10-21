@@ -12,8 +12,8 @@ plt.style.use('dark_background')
 print("Pyplot loaded")
 # import sklearn as sks
 # #print("Scikit-learn loaded")
-# import seaborn as sns
-# #print("Seaborn loaded")
+import seaborn as sns
+print("Seaborn loaded")
 # import quandl as qn
 # print("Imports loaded!\n")
 
