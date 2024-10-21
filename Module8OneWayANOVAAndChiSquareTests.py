@@ -9,14 +9,29 @@ def Chi2(dat: pd.DataFrame, proportion: bool) -> None:
   k = len(dat.index)
   df = k - 1
   print(f"{df = }")
-  chi2 = sum([(dat["Observed"][row] - dat["Expected"][row]) ** 2 / dat["Expected"][row] for row in dat.index])
+  lst = []
+  for row in dat.index:
+    oi = dat["Observed"][row]
+    ei = dat["Expected"][row]
+    chii = (oi - ei) ** 2 / ei
+    print(f"({oi} - {ei}) ** 2 / {ei} = {chii}")
+    lst.append(chii)
+  chi2 = sum(lst)
+  #chi2 = sum([(dat["Observed"][row] - dat["Expected"][row]) ** 2 / dat["Expected"][row] for row in dat.index])
   print(f"{chi2 = :0.3f}")
+  pvalue = st.chi2.sf(chi2, df)
+  print(f"{pvalue = :0.3f}")
 
+  from scipy.stats import chisquare
+  # Calculates the chi-square statistic and $p$-value for alpha = 0.05 for the given observed and expected counts
+  statistic, pvalue = chisquare(dat["Observed"], f_exp=dat["Expected"])
+  print(f"{statistic = :.4f}")
+  print(f"{pvalue = :.4f}")
 
 #==================================================================================================
 
 def Section8():
-  section = "PA8.2.1: Daily distribution of accidents"
+  section = "CA8.2.1: Chi-square goodness of fit test"
 
   if section == "":
     print(f"{0:.3f}")
@@ -36,8 +51,20 @@ def Section8():
   elif section == "":
     print(f"{0:.3f}")
     
-  elif section == "":
-    print(f"{0:.3f}")
+  elif section == "CA8.2.1: Chi-square goodness of fit test":
+    q = 3
+    match q:
+      case 1:
+        pvalue = st.chi2.sf(14.86, 4)
+        print(f"{pvalue = :0.3f}")
+      case 2:
+        print(f"{228*0.25}, {228*0.50}, {228*0.25}")
+      case 3:
+        dat = pd.DataFrame({
+          "Observed": [15, 32, 33],
+          "Expected": [20, 40, 20]}, 
+          index=["Red", "Pink", "White"])
+        Chi2(dat, False)
     
   elif section == "PA8.2.1: Daily distribution of accidents":
     dat = pd.DataFrame({
